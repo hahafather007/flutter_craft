@@ -1,0 +1,19 @@
+name: flutter_craft
+description: 完全采用Flutter开发的仿「雷霆战机」小游戏
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: 0.1.2
+  rxdart: 0.22.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
