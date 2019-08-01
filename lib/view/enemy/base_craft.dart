@@ -42,7 +42,7 @@ abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
   }
 
   @override
-  void nextFrame() async {
+  void nextFrame() {
     if (hp == null || position == null || xMove == null || yMove == null) {
       return;
     }

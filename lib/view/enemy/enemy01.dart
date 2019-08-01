@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'base_craft.dart';
 import 'package:flutter_craft/utils/system_util.dart';
+import 'package:flutter_craft/common/settings.dart';
 
 class Enemy01 extends BaseCraftView {
   final _mState = _Enemy01State();
@@ -36,6 +37,11 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
     yMove = random.nextDouble() * 1.5;
     if (yMove <= 0.3) {
       yMove += 0.3;
+    }
+
+    if (!Settings.IS_FRAME60) {
+      yMove *= 2;
+      xMove *= 2;
     }
   }
 

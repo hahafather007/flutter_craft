@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/enemy/base_craft.dart';
 import 'package:flutter_craft/view/enemy/enemy01.dart';
 import 'package:flutter_craft/view/base_state.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_craft/utils/timer_util.dart';
 
 class EnemyView extends StatefulWidget {
   @override
@@ -15,13 +15,11 @@ class EnemyState extends BaseState<EnemyView> {
   @override
   void init() {
     // 初始化每种类型的敌机
-    enemies.addAll(List.generate(20, (_) => Enemy01()));
+    enemies.addAll(List.generate(1000, (_) => Enemy01()));
 
     // 每16毫秒移动一次敌机，保证60帧
-    bindSub(Observable.periodic(const Duration(milliseconds: 16))
-        .flatMap((_) => Observable.fromIterable(enemies))
-        .doOnData((enemy)  => enemy.nextFrame())
-        .listen(null));
+    bindSub(TimerUtil.frameStream
+        .listen((_) async => enemies.forEach((v) => v.nextFrame())));
   }
 
   @override

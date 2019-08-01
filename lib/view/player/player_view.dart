@@ -3,7 +3,7 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_craft/utils/system_util.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_craft/utils/timer_util.dart';
 
 class PlayerView extends StatefulWidget {
   @override
@@ -25,9 +25,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame {
     super.initState();
 
     // 每16毫秒移动一次敌机，保证60帧
-    bindSub(Observable.periodic(const Duration(milliseconds: 16))
-        .doOnData((_) => nextFrame())
-        .listen(null));
+    bindSub(TimerUtil.frameStream.listen((_) => nextFrame()));
   }
 
   @override
