@@ -25,33 +25,33 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
   final _random = Random.secure();
 
   int _skipNum = 0;
+  int _bulletIndex = 0;
 
   @override
   void init() {
     // 创建敌机的子弹
     bindSub(TimerUtil.frameStream
         .map((_) => _skipNum++)
+        .where((_) => _skipNum >= (Settings.IS_FRAME60 ? 2 : 1))
         .where((_) => widget.enemies.isNotEmpty)
+        .map((_) => _skipNum = 0)
         .listen((_) async {
-      _enemyBullets.forEach((v) => v.nextFrame());
-
-      if (_skipNum >= (Settings.IS_FRAME60 ? 10 : 5)) {
-        _skipNum = 0;
-        final removeIndex = List<int>();
-        for (int i = 0; i < _enemyBullets.length; i++) {
-          if (_enemyBullets[i].canRecycle()) {
-            removeIndex.add(i);
-          }
-        }
-        removeIndex.forEach((index) => _enemyBullets.removeAt(index));
-        final index = _random.nextInt(widget.enemies.length);
-        final bullet = EnemyBullet01(
-            enemyPos: widget.enemies[index].getFirePos(),
-            playerPos: widget.player.getCenterPos());
-        _enemyBullets.add(bullet);
-        streamAdd(_bulletStream, _enemyBullets);
-      }
+      final removeList = _enemyBullets.where((v) => v.canRecycle()).toList();
+      removeList
+          .forEach((a) => _enemyBullets.removeWhere((b) => a.key == b.key));
+      removeList.clear();
+      final index = _random.nextInt(widget.enemies.length);
+      final bullet = EnemyBullet01(
+          key: Key("EnemyBullet01${_bulletIndex++}"),
+          enemyPos: widget.enemies[index].getFirePos(),
+          playerPos: widget.player.getCenterPos());
+      _enemyBullets.add(bullet);
+      streamAdd(_bulletStream, _enemyBullets);
     }));
+
+    // 控制每一帧移动
+    bindSub(TimerUtil.frameStream
+        .listen((_) => _enemyBullets.forEach((v) => v.nextFrame())));
   }
 
   @override

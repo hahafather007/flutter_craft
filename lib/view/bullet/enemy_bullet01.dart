@@ -11,7 +11,8 @@ class EnemyBullet01 extends BaseBulletView {
   final Offset enemyPos;
   final Offset playerPos;
 
-  EnemyBullet01({@required this.enemyPos, @required this.playerPos});
+  EnemyBullet01({Key key, @required this.enemyPos, @required this.playerPos})
+      : super(key: key);
 
   @override
   BaseBulletState<BaseBulletView> get state => _state;
@@ -40,14 +41,23 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: position.dy,
-      left: position.dx,
-      child: Container(
-        width: _bulletW,
-        height: _bulletH,
-        decoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
-      ),
+    return StreamBuilder(
+      stream: posStream.stream,
+      initialData: position,
+      builder: (context, snapshot) {
+        final Offset offset = snapshot.data;
+
+        return Positioned(
+          top: offset.dy,
+          left: offset.dx,
+          child: Container(
+            width: _bulletW,
+            height: _bulletH,
+            decoration:
+                BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
+          ),
+        );
+      },
     );
   }
 
