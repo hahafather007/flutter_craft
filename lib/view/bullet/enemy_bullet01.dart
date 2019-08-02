@@ -63,6 +63,10 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
   @override
   bool canRecycle() {
+    if (alreadyUse) {
+      return true;
+    }
+
     if (position == null) {
       return false;
     }
@@ -75,7 +79,16 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
   @override
   Rect getRect() {
+    if (position == null) {
+      return null;
+    }
+
     return Rect.fromPoints(
         position, Offset(position.dx + _bulletW, position.dy + _bulletH));
+  }
+
+  @override
+  void use() {
+    alreadyUse = true;
   }
 }

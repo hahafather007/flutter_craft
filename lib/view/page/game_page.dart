@@ -3,6 +3,7 @@ import 'package:flutter_craft/view/enemy/enemy_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/bullet/enemy_bullet_view.dart';
+import 'package:flutter_craft/utils/timer_util.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -20,6 +21,20 @@ class GameState extends BaseState<GamePage> {
     _playerView = PlayerView();
     _enemyBulletView =
         EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
+
+    // 检测玩家是否被击中
+    bindSub(
+        TimerUtil.frameStream.where((_) => _playerView.canAttack).listen((_) {
+      for (var bullet in _enemyBulletView.bullets) {
+        if (bullet.getRect() != null && _playerView.getRect() != null) {
+          if (bullet.getRect().overlaps(_playerView.getRect())) {
+            _playerView.attack(1);
+            bullet.use();
+            break;
+          }
+        }
+      }
+    }));
   }
 
   @override

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'base_craft.dart';
+import 'base_enemy.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'package:flutter_craft/common/settings.dart';
 
 class Enemy01 extends BaseCraftView {
-  final _mState = _Enemy01State();
+  final _state = _Enemy01State();
 
   @override
-  BaseCraftState<BaseCraftView> get state => _mState;
+  BaseCraftState<BaseCraftView> get state => _state;
+
+  @override
+  bool get canAttack => _state.canAttack;
+
+  @override
+  Future<bool> attack(int value) => _state.attack(value);
 }
 
 class _Enemy01State extends BaseCraftState<Enemy01> {
@@ -63,4 +69,14 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
   Offset getFirePos() {
     return Offset(position.dx + _enemyW / 2, position.dy + _enemyH);
   }
+
+  @override
+  Future<bool> attack(int value) async {
+    hp -= value;
+
+    return hp <= 0;
+  }
+
+  @override
+  bool get canAttack => true;
 }

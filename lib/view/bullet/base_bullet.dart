@@ -24,12 +24,15 @@ abstract class BaseBulletView extends StatefulWidget with BaseFrame {
   bool canRecycle() {
     return state.canRecycle();
   }
+
+  void use() => state.use();
 }
 
 abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
     with BaseFrame {
   final posStream = StreamController<Offset>();
 
+  bool alreadyUse = false;
   double xMove;
   double yMove;
   Offset position;
@@ -46,10 +49,13 @@ abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
 
   @override
   void nextFrame() {
-    if (position == null || xMove == null || yMove == null) {
+    if (alreadyUse || position == null || xMove == null || yMove == null) {
       return;
     }
     position = Offset(position.dx + xMove, position.dy + yMove);
     streamAdd(posStream, position);
   }
+
+  /// 子弹击中后调用
+  void use();
 }

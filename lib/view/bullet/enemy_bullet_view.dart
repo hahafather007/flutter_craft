@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'enemy_bullet01.dart';
-import 'package:flutter_craft/view/enemy/base_craft.dart';
+import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
@@ -9,18 +9,21 @@ import 'dart:math';
 import 'dart:async';
 
 class EnemyBulletView extends StatefulWidget {
+  final _state = _EnemyBulletState();
+
   final List<BaseCraftView> enemies;
   final PlayerView player;
 
   EnemyBulletView({@required this.enemies, @required this.player});
 
   @override
-  State createState() => _EnemyBulletState();
+  State createState() => _state;
+
+  List<EnemyBullet01> get bullets => _state._enemyBullets;
 }
 
 class _EnemyBulletState extends BaseState<EnemyBulletView> {
   final _bulletStream = StreamController<List<EnemyBullet01>>();
-
   final _enemyBullets = List<EnemyBullet01>();
   final _random = Random.secure();
 
@@ -32,14 +35,18 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
     // 创建敌机的子弹
     bindSub(TimerUtil.frameStream
         .map((_) => _skipNum++)
+        // 控制敌机发射子弹的频率
         .where((_) => _skipNum >= (Settings.IS_FRAME60 ? 2 : 1))
         .where((_) => widget.enemies.isNotEmpty)
         .map((_) => _skipNum = 0)
         .listen((_) async {
+      // 清理可回收的子弹
       final removeList = _enemyBullets.where((v) => v.canRecycle()).toList();
       removeList
           .forEach((a) => _enemyBullets.removeWhere((b) => a.key == b.key));
       removeList.clear();
+
+      // 随机让敌机发射子弹
       final index = _random.nextInt(widget.enemies.length);
       final bullet = EnemyBullet01(
           key: Key("EnemyBullet01${_bulletIndex++}"),
