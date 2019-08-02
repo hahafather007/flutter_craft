@@ -21,6 +21,14 @@ abstract class BaseCraftView extends StatefulWidget with BaseFrame {
   bool canRecycle() {
     return state.canRecycle();
   }
+
+  Offset getFirePos() {
+    return state.getFirePos();
+  }
+
+  Rect getRect() {
+    return state.getRect();
+  }
 }
 
 /// 所有敌机的基础类
@@ -54,4 +62,10 @@ abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
       init();
     }
   }
+
+  /// 子弹发射点
+  Offset getFirePos();
+
+  /// 矩形区域
+  Rect getRect();
 }

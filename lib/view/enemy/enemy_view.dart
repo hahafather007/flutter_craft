@@ -5,19 +5,22 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 
 class EnemyView extends StatefulWidget {
+  final _state = _EnemyState();
+
   @override
-  State createState() => EnemyState();
+  State createState() => _state;
+
+  List<BaseCraftView> get enemies => _state.enemies;
 }
 
-class EnemyState extends BaseState<EnemyView> {
+class _EnemyState extends BaseState<EnemyView> {
   final enemies = List<BaseCraftView>();
 
   @override
   void init() {
     // 初始化每种类型的敌机
-    enemies.addAll(List.generate(1000, (_) => Enemy01()));
+    enemies.addAll(List.generate(20, (_) => Enemy01()));
 
-    // 每16毫秒移动一次敌机，保证60帧
     bindSub(TimerUtil.frameStream
         .listen((_) async => enemies.forEach((v) => v.nextFrame())));
   }

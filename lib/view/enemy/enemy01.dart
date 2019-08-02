@@ -52,4 +52,15 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
         position.dx < -_enemyW ||
         position.dx > getScreenWidth(context);
   }
+
+  @override
+  Rect getRect() {
+    return Rect.fromPoints(
+        position, Offset(position.dx + _enemyW, position.dy + _enemyH));
+  }
+
+  @override
+  Offset getFirePos() {
+    return Offset(position.dx + _enemyW / 2, position.dy + _enemyH);
+  }
 }

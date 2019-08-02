@@ -6,9 +6,21 @@ import 'package:flutter_craft/utils/system_util.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 
 class PlayerView extends StatefulWidget {
+  final _state = _PlayerState();
+
   @override
-  State createState() {
-    return _PlayerState();
+  State createState() => _state;
+
+  Rect getRect() {
+    return _state.getRect();
+  }
+
+  Offset getFirePos() {
+    return _state.getFirePos();
+  }
+
+  Offset getCenterPos() {
+    return _state.getCenterPos();
   }
 }
 
@@ -21,18 +33,12 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame {
   int hp;
 
   @override
-  void initState() {
-    super.initState();
-
-    // 每16毫秒移动一次敌机，保证60帧
-    bindSub(TimerUtil.frameStream.listen((_) => nextFrame()));
-  }
-
-  @override
   void init() {
     hp = 3;
     position = Offset(getScreenWidth(context) / 2 - _playerW / 2,
         getScreenHeight(context) - 80);
+
+    bindSub(TimerUtil.frameStream.listen((_) => nextFrame()));
   }
 
   @override
@@ -102,5 +108,18 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame {
     }
 
     position = Offset(dx, dy);
+  }
+
+  Rect getRect() {
+    return Rect.fromPoints(
+        position, Offset(position.dx + _playerW, position.dy + _playerH));
+  }
+
+  Offset getFirePos() {
+    return Offset(position.dx + _playerW / 2, position.dy);
+  }
+
+  Offset getCenterPos() {
+    return Offset(position.dx + _playerW / 2, position.dy + _playerH / 2);
   }
 }

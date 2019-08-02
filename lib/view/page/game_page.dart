@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/enemy/enemy_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
+import 'package:flutter_craft/view/bullet/enemy_bullet_view.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -9,8 +10,17 @@ class GamePage extends StatefulWidget {
 }
 
 class GameState extends BaseState<GamePage> {
+  EnemyView _enemyView;
+  PlayerView _playerView;
+  EnemyBulletView _enemyBulletView;
+
   @override
-  void init() {}
+  void init() {
+    _enemyView = EnemyView();
+    _playerView = PlayerView();
+    _enemyBulletView =
+        EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +28,13 @@ class GameState extends BaseState<GamePage> {
       body: Stack(
         children: <Widget>[
           // 敌机图层
-          EnemyView(),
+          _enemyView,
+
+          // 敌机子弹图层
+          _enemyBulletView,
 
           // 玩家图层
-          PlayerView(),
+          _playerView,
         ],
       ),
     );
