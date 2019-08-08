@@ -21,8 +21,10 @@ class _EnemyState extends BaseState<EnemyView> {
     // 初始化每种类型的敌机
     _enemies.addAll(List.generate(20, (_) => Enemy01()));
 
-    bindSub(TimerUtil.frameStream
-        .listen((_) async => _enemies.forEach((v) => v.nextFrame())));
+    bindSub(TimerUtil.updateStream
+        .listen((_) => _enemies.forEach((v) => v.update())));
+    bindSub(TimerUtil.renderStream
+        .listen((_) => _enemies.forEach((v) => v.render())));
   }
 
   @override

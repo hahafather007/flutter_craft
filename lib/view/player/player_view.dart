@@ -51,7 +51,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     _position = Offset(getScreenWidth(context) / 2 - _playerW / 2,
         getScreenHeight(context) - 80);
 
-    bindSub(TimerUtil.frameStream.listen((_) => nextFrame()));
+    bindSub(TimerUtil.renderStream.listen((_) => render()));
   }
 
   @override
@@ -110,11 +110,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   }
 
   @override
-  void nextFrame() {
+  void render() {
     if (_hp == null || _position == null) return;
 
     streamAdd(_posStream, _position);
   }
+
+  @override
+  void update() {}
 
   /// 调用该方法表示手指移动了多少像素
   void move(double xNum, double yNum) async {
@@ -164,22 +167,16 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
       return false;
     }
 
-//    _hp -= value;
+    _hp -= value;
 
     // 被击中后的无敌状态
     if (_hp > 0) {
       _invincible = true;
-      streamAdd(_showStream, false);
-      await Future.delayed(const Duration(milliseconds: 300));
-      streamAdd(_showStream, true);
-      await Future.delayed(const Duration(milliseconds: 300));
-      streamAdd(_showStream, false);
-      await Future.delayed(const Duration(milliseconds: 300));
-      streamAdd(_showStream, true);
-      await Future.delayed(const Duration(milliseconds: 300));
-      streamAdd(_showStream, false);
-      await Future.delayed(const Duration(milliseconds: 300));
-      streamAdd(_showStream, true);
+      await for (bool show
+          in Stream.fromIterable([false, true, false, true, false, true])) {
+        streamAdd(_showStream, show);
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
       _invincible = false;
     }
 

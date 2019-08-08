@@ -16,8 +16,13 @@ abstract class BaseBulletView extends StatefulWidget with BaseFrame {
   }
 
   @override
-  void nextFrame() {
-    state.nextFrame();
+  void render() {
+    state.render();
+  }
+
+  @override
+  void update() {
+    state.update();
   }
 
   @override
@@ -25,14 +30,14 @@ abstract class BaseBulletView extends StatefulWidget with BaseFrame {
     return state.canRecycle();
   }
 
-  void use() => state.use();
+  void useBullet() => state.useBullet();
 }
 
 abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
     with BaseFrame {
   final posStream = StreamController<Offset>();
 
-  bool alreadyUse = false;
+  bool bulletUsed = false;
   double xMove;
   double yMove;
   Offset position;
@@ -48,14 +53,20 @@ abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
   }
 
   @override
-  void nextFrame() {
-    if (alreadyUse || position == null || xMove == null || yMove == null) {
-      return;
-    }
-    position = Offset(position.dx + xMove, position.dy + yMove);
+  void render() {
     streamAdd(posStream, position);
   }
 
+  @override
+  void update() {
+    if (bulletUsed || position == null || xMove == null || yMove == null) {
+      return;
+    }
+    position = Offset(position.dx + xMove, position.dy + yMove);
+  }
+
   /// 子弹击中后调用
-  void use();
+  void useBullet() {
+    bulletUsed = true;
+  }
 }

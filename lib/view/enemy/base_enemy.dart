@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/view/base_state.dart';
@@ -11,15 +12,17 @@ abstract class BaseCraftView extends StatefulWidget with BaseFrame, BaseCraft {
   @override
   State<StatefulWidget> createState() => state;
 
+  @override
+  bool get canAttack {}
 
   @override
-  bool get canAttack {
-
+  void render() {
+    state.render();
   }
 
   @override
-  void nextFrame() {
-    state.nextFrame();
+  void update() {
+    state.update();
   }
 
   @override
@@ -41,6 +44,7 @@ abstract class BaseCraftView extends StatefulWidget with BaseFrame, BaseCraft {
 /// 所有敌机的基础类
 abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
     with BaseFrame, BaseCraft {
+  final posStream = StreamController<Offset>();
   final random = Random.secure();
 
   int hp;
@@ -49,14 +53,24 @@ abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
   Offset position;
 
   @override
-  void nextFrame() {
+  void dispose() {
+    posStream.close();
+
+    super.dispose();
+  }
+
+  @override
+  void render() {
+    streamAdd(posStream, position);
+  }
+
+  @override
+  void update() {
     if (hp == null || position == null || xMove == null || yMove == null) {
       return;
     }
+    position = Offset(position.dx + xMove, position.dy + yMove);
 
-    setState(() {
-      position = Offset(position.dx + xMove, position.dy + yMove);
-    });
     if (canRecycle()) {
       init();
     }

@@ -22,14 +22,22 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Container(
-        width: _enemyW,
-        height: _enemyH,
-        color: Colors.black,
-      ),
+    return StreamBuilder(
+      stream: posStream.stream,
+      initialData: position,
+      builder: (context, snapshot) {
+        final Offset offset = snapshot.data;
+
+        return Positioned(
+          left: offset.dx,
+          top: offset.dy,
+          child: Container(
+            width: _enemyW,
+            height: _enemyH,
+            color: Colors.black,
+          ),
+        );
+      },
     );
   }
 
@@ -43,11 +51,6 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
     yMove = random.nextDouble() * 1.5;
     if (yMove <= 0.3) {
       yMove += 0.3;
-    }
-
-    if (!Settings.IS_FRAME60) {
-      yMove *= 2;
-      xMove *= 2;
     }
   }
 

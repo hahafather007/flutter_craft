@@ -24,12 +24,12 @@ class GameState extends BaseState<GamePage> {
 
     // 检测玩家是否被击中
     bindSub(
-        TimerUtil.frameStream.where((_) => _playerView.canAttack).listen((_) {
+        TimerUtil.renderStream.where((_) => _playerView.canAttack).listen((_) {
       for (var bullet in _enemyBulletView.bullets) {
         if (bullet.getRect() != null && _playerView.getRect() != null) {
           if (bullet.getRect().overlaps(_playerView.getRect())) {
             _playerView.attack(1);
-            bullet.use();
+            bullet.useBullet();
             break;
           }
         }

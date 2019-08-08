@@ -33,13 +33,13 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
   @override
   void init() {
     // 创建敌机的子弹
-    bindSub(TimerUtil.frameStream
+    bindSub(TimerUtil.updateStream
         .map((_) => _skipNum++)
         // 控制敌机发射子弹的频率
-        .where((_) => _skipNum >= (Settings.IS_FRAME60 ? 2 : 1))
         .where((_) => widget.enemies.isNotEmpty)
-        .map((_) => _skipNum = 0)
         .listen((_) async {
+      _enemyBullets.forEach((v) => v.update());
+
       // 清理可回收的子弹
       final removeList = _enemyBullets.where((v) => v.canRecycle()).toList();
       removeList
@@ -47,18 +47,21 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
       removeList.clear();
 
       // 随机让敌机发射子弹
-      final index = _random.nextInt(widget.enemies.length);
-      final bullet = EnemyBullet01(
-          key: Key("EnemyBullet01${_bulletIndex++}"),
-          enemyPos: widget.enemies[index].getFirePos(),
-          playerPos: widget.player.getCenterPos());
-      _enemyBullets.add(bullet);
+      if (_skipNum >= 20) {
+        _skipNum = 0;
+        final index = _random.nextInt(widget.enemies.length);
+        final bullet = EnemyBullet01(
+            key: Key("EnemyBullet01${_bulletIndex++}"),
+            enemyPos: widget.enemies[index].getFirePos(),
+            playerPos: widget.player.getCenterPos());
+        _enemyBullets.add(bullet);
+      }
       streamAdd(_bulletStream, _enemyBullets);
     }));
 
     // 控制每一帧移动
-    bindSub(TimerUtil.frameStream
-        .listen((_) => _enemyBullets.forEach((v) => v.nextFrame())));
+    bindSub(TimerUtil.renderStream
+        .listen((_) => _enemyBullets.forEach((v) => v.render())));
   }
 
   @override

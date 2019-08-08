@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'base_bullet.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'dart:math';
-import 'package:flutter_craft/common/settings.dart';
 
 class EnemyBullet01 extends BaseBulletView {
   final _state = _EnemyBullet01State();
@@ -32,11 +31,6 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
     final singleLength = _bulletSpeed / sqrt(1 + scale * scale);
     yMove = singleLength;
     xMove = scale * singleLength;
-
-    if (!Settings.IS_FRAME60) {
-      yMove *= 2;
-      xMove *= 2;
-    }
   }
 
   @override
@@ -63,7 +57,7 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
   @override
   bool canRecycle() {
-    if (alreadyUse) {
+    if (bulletUsed) {
       return true;
     }
 
@@ -85,10 +79,5 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
     return Rect.fromPoints(
         position, Offset(position.dx + _bulletW, position.dy + _bulletH));
-  }
-
-  @override
-  void use() {
-    alreadyUse = true;
   }
 }
