@@ -41,13 +41,10 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
       _enemyBullets.forEach((v) => v.update());
 
       // 清理可回收的子弹
-      final removeList = _enemyBullets.where((v) => v.canRecycle()).toList();
-      removeList
-          .forEach((a) => _enemyBullets.removeWhere((b) => a.key == b.key));
-      removeList.clear();
+      _enemyBullets.removeWhere((v) => v.canRecycle());
 
       // 随机让敌机发射子弹
-      if (_skipNum >= 20) {
+      if (_skipNum >= 2) {
         _skipNum = 0;
         final index = _random.nextInt(widget.enemies.length);
         final bullet = EnemyBullet01(

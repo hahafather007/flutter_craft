@@ -54,6 +54,8 @@ abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
 
   @override
   void render() {
+    if (position == null) return;
+
     streamAdd(posStream, position);
   }
 

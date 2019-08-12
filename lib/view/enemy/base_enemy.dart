@@ -61,6 +61,8 @@ abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
 
   @override
   void render() {
+    if (position == null) return;
+
     streamAdd(posStream, position);
   }
 
