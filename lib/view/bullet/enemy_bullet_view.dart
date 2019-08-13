@@ -4,7 +4,6 @@ import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
-import 'package:flutter_craft/common/settings.dart';
 import 'dart:math';
 import 'dart:async';
 
@@ -56,7 +55,7 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
       streamAdd(_bulletStream, _enemyBullets);
     }));
 
-    // 控制每一帧移动
+    // 绘制每一帧
     bindSub(TimerUtil.renderStream
         .listen((_) => _enemyBullets.forEach((v) => v.render())));
   }

@@ -17,8 +17,8 @@ class Enemy01 extends BaseCraftView {
 }
 
 class _Enemy01State extends BaseCraftState<Enemy01> {
-  final _enemyH = 10.0;
-  final _enemyW = 10.0;
+  final _enemyW = 30.0;
+  final _enemyH = 21.0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,12 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
         return Positioned(
           left: offset.dx,
           top: offset.dy,
-          child: Container(
+          child: Image.asset(
+            "images/enemy01.png",
+            key: Key("Enemy01"),
             width: _enemyW,
             height: _enemyH,
-            color: Colors.black,
+            fit: BoxFit.fill,
           ),
         );
       },

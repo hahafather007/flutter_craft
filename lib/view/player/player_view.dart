@@ -169,17 +169,22 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
     _hp -= value;
 
-    // 被击中后的无敌状态
+    // 无敌状态
     if (_hp > 0) {
-      _invincible = true;
-      await for (bool show
-          in Stream.fromIterable([false, true, false, true, false, true])) {
-        streamAdd(_showStream, show);
-        await Future.delayed(const Duration(milliseconds: 300));
-      }
-      _invincible = false;
+      _showInvincible();
     }
 
     return _hp <= 0;
+  }
+
+  /// 显示无敌时的闪烁效果
+  void _showInvincible() async {
+    _invincible = true;
+    await for (final show
+        in Stream.fromIterable([false, true, false, true, false, true])) {
+      streamAdd(_showStream, show);
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+    _invincible = false;
   }
 }

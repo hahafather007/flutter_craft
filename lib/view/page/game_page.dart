@@ -3,7 +3,10 @@ import 'package:flutter_craft/view/enemy/enemy_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/bullet/enemy_bullet_view.dart';
+import 'package:flutter_craft/view/background/game_ground.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -11,6 +14,7 @@ class GamePage extends StatefulWidget {
 }
 
 class GameState extends BaseState<GamePage> {
+  AudioPlayer _audioPlayer;
   EnemyView _enemyView;
   PlayerView _playerView;
   EnemyBulletView _enemyBulletView;
@@ -21,6 +25,10 @@ class GameState extends BaseState<GamePage> {
     _playerView = PlayerView();
     _enemyBulletView =
         EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
+
+    // bgm
+    final audio = AudioCache();
+    audio.loop("game_bg.mp3").then((v) => _audioPlayer = v);
 
     // 检测玩家是否被击中
     bindSub(
@@ -37,10 +45,20 @@ class GameState extends BaseState<GamePage> {
   }
 
   @override
+  void dispose() {
+    _audioPlayer?.stop()?.then((_) => _audioPlayer?.release());
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          // 背景
+          GameGround(),
+
           // 敌机图层
           _enemyView,
 
