@@ -3,6 +3,7 @@ import 'package:flutter_craft/view/enemy/enemy_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/bullet/enemy_bullet_view.dart';
+import 'package:flutter_craft/view/bullet/player_bullet_view.dart';
 import 'package:flutter_craft/view/background/game_ground.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:audioplayers/audio_cache.dart';
@@ -18,6 +19,7 @@ class GameState extends BaseState<GamePage> {
   EnemyView _enemyView;
   PlayerView _playerView;
   EnemyBulletView _enemyBulletView;
+  PlayerBulletView _playerBulletView;
 
   @override
   void init() {
@@ -25,28 +27,33 @@ class GameState extends BaseState<GamePage> {
     _playerView = PlayerView();
     _enemyBulletView =
         EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
+    _playerBulletView = PlayerBulletView(player: _playerView);
 
     // bgm
     final audio = AudioCache();
     audio.loop("game_bg.mp3").then((v) => _audioPlayer = v);
 
     // 检测玩家是否被击中
-    bindSub(
-        TimerUtil.updateStream.where((_) => _playerView.canAttack).listen((_) {
-      for (var bullet in _enemyBulletView.bullets) {
+    bindSub(TimerUtil.updateStream
+        .where((_) => _playerView.canAttack)
+        .listen((_) async {
+      _enemyBulletView.bullets.forEach((bullet) {
         if (bullet.getRect() != null && _playerView.getRect() != null) {
           if (bullet.getRect().overlaps(_playerView.getRect())) {
             _playerView.attack(1);
             bullet.useBullet();
           }
         }
-      }
+      });
+//      _playerBulletView.bullets.forEach((bullet){
+//
+//      });
     }));
   }
 
   @override
   void dispose() {
-    _audioPlayer?.stop()?.then((_) => _audioPlayer?.release());
+    _audioPlayer?.release();
 
     super.dispose();
   }
@@ -59,11 +66,14 @@ class GameState extends BaseState<GamePage> {
           // 背景
           GameGround(),
 
-          // 敌机图层
-          _enemyView,
-
           // 敌机子弹图层
           _enemyBulletView,
+
+          // 玩家子弹图层
+          _playerBulletView,
+
+          // 敌机图层
+          _enemyView,
 
           // 玩家图层
           _playerView,
