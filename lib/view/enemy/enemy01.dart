@@ -12,7 +12,7 @@ class Enemy01 extends BaseEnemyView {
   bool get canAttack => _state.canAttack;
 
   @override
-  void attack(int value) => _state.attack(value);
+  bool attack(int value) => _state.attack(value);
 }
 
 class _Enemy01State extends BaseCraftState<Enemy01> {
@@ -100,12 +100,14 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
   }
 
   @override
-  void attack(int value) async {
+  bool attack(int value) {
     hp -= value;
 
     if (hp <= 0) {
       isBoom = true;
     }
+
+    return hp <= 0;
   }
 
   @override

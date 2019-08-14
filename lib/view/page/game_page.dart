@@ -7,6 +7,7 @@ import 'package:flutter_craft/view/bullet/player_bullet_view.dart';
 import 'package:flutter_craft/view/background/game_ground.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:flutter_craft/view/base_frame.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class GamePage extends StatefulWidget {
