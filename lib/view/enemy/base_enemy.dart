@@ -69,6 +69,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
   @override
   void init() {
     _boomState = 0;
+    _boomStateNum = 0;
     isBoom = false;
   }
 

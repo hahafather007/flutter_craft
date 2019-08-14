@@ -57,6 +57,7 @@ flutter:
     - images/home_bg18.jpg
     - images/home_bg19.jpg
     - images/home_bg20.jpg
+    - images/btn.png
     # 音效
     - assets/game_bg.mp3
     - assets/home_bg.mp3

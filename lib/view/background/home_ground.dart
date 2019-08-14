@@ -7,8 +7,18 @@ import 'dart:async';
 
 /// 主页的背景
 class HomeGround extends StatefulWidget {
+  final _state = _HomeGroundState();
+
   @override
-  State createState() => _HomeGroundState();
+  State createState() => _state;
+
+  void pause() {
+    _state.pause();
+  }
+
+  void resume() {
+    _state.resume();
+  }
 }
 
 class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
@@ -16,11 +26,14 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
 
   int _bgState = 0;
   int _bgStateNum = 0;
+  bool _canShow = true;
 
   @override
   void init() {
-    bindSub(TimerUtil.updateStream.listen((_) => update()));
-    bindSub(TimerUtil.renderStream.listen((_) => render()));
+    bindSub(
+        TimerUtil.updateStream.where((_) => _canShow).listen((_) => update()));
+    bindSub(
+        TimerUtil.renderStream.where((_) => _canShow).listen((_) => render()));
   }
 
   @override
@@ -73,5 +86,13 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
   @override
   void render() {
     streamAdd(_bgStateStream, _bgStateNum);
+  }
+
+  void pause() {
+    _canShow = false;
+  }
+
+  void resume() {
+    _canShow = true;
   }
 }
