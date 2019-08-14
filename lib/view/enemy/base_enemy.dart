@@ -13,7 +13,7 @@ abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   State<StatefulWidget> createState() => state;
 
   @override
-  bool get canAttack {}
+  bool get canAttack;
 
   @override
   void render() {
@@ -45,18 +45,30 @@ abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
 abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     with BaseFrame, BaseCraft {
   final posStream = StreamController<Offset>();
+  final boomStateStream = StreamController<int>();
   final random = Random.secure();
 
   int hp;
+  int boomState;
+  bool isBoom;
   double xMove;
   double yMove;
   Offset position;
+  List<Widget> boomViews;
 
   @override
   void dispose() {
     posStream.close();
+    boomStateStream.close();
+    boomViews.clear();
 
     super.dispose();
+  }
+
+  @override
+  void init() {
+    boomState = 0;
+    isBoom = false;
   }
 
   @override
@@ -73,8 +85,17 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     }
     position = Offset(position.dx + xMove, position.dy + yMove);
 
-    if (canRecycle()) {
+    if (canRecycle() && !isBoom) {
       init();
+    }
+
+    if (isBoom && boomViews?.isNotEmpty == true) {
+      boomState++;
+      if(boomState>=40){
+        isBoom = false;
+      }else {
+        streamAdd(boomStateStream, boomState ~/ 10);
+      }
     }
   }
 }

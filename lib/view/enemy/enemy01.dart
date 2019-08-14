@@ -12,12 +12,14 @@ class Enemy01 extends BaseEnemyView {
   bool get canAttack => _state.canAttack;
 
   @override
-  Future<bool> attack(int value) => _state.attack(value);
+  void attack(int value) => _state.attack(value);
 }
 
 class _Enemy01State extends BaseCraftState<Enemy01> {
   final _enemyW = 30.0;
   final _enemyH = 21.0;
+
+  Widget _enemyView;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +32,14 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
         return Positioned(
           left: offset.dx,
           top: offset.dy,
-          child: Image.asset(
-            "images/enemy01.png",
-            key: Key("Enemy01"),
-            width: _enemyW,
-            height: _enemyH,
-            fit: BoxFit.fill,
+          child: StreamBuilder(
+            stream: boomStateStream.stream,
+            initialData: 0,
+            builder: (context, snapshot) {
+              final state = snapshot.data;
+
+              return !isBoom && hp > 0 ? _enemyView : boomViews[state];
+            },
           ),
         );
       },
@@ -44,6 +48,8 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   void init() {
+    super.init();
+
     hp = 3;
     position = Offset(
         random.nextInt((getScreenWidth(context) - _enemyW).toInt()).toDouble(),
@@ -53,10 +59,29 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
     if (yMove <= 0.3) {
       yMove += 0.3;
     }
+    boomViews = List.generate(4, (index) {
+      return Image.asset(
+        "images/boom_state${index + 1}.png",
+        width: _enemyW,
+        height: _enemyW,
+        fit: BoxFit.fill,
+      );
+    });
+
+    _enemyView = Image.asset(
+      "images/enemy01.png",
+      width: _enemyW,
+      height: _enemyH,
+      fit: BoxFit.fill,
+    );
   }
 
   @override
   bool canRecycle() {
+    if (position == null) {
+      return false;
+    }
+
     return hp <= 0 ||
         position.dy >= getScreenHeight(context) ||
         position.dx < -_enemyW ||
@@ -75,12 +100,14 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
   }
 
   @override
-  Future<bool> attack(int value) async {
+  void attack(int value) async {
     hp -= value;
 
-    return hp <= 0;
+    if (hp <= 0) {
+      isBoom = true;
+    }
   }
 
   @override
-  bool get canAttack => true;
+  bool get canAttack => hp > 0;
 }

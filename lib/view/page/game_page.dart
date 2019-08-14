@@ -51,6 +51,10 @@ class GameState extends BaseState<GamePage> {
     bindSub(TimerUtil.updateStream.listen((_) async {
       _playerBulletView.bullets.forEach((bullet) {
         for (final enemy in _enemyView.enemies) {
+          if (!enemy.canAttack) {
+            continue;
+          }
+
           if (bullet.getRect() != null && enemy.getRect() != null) {
             if (bullet.getRect().overlaps(enemy.getRect())) {
               enemy.attack(1);
