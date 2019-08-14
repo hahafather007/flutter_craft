@@ -36,11 +36,14 @@ class PlayerView extends StatefulWidget with BaseCraft {
 class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   final _posStream = StreamController<Offset>();
   final _showStream = StreamController<bool>();
+  final _stateStream = StreamController<int>();
+  final _stateViews = List<Widget>();
   final _playerH = 40.0;
-  final _playerW = 40.0;
+  final _playerW = 30.0;
 
   Offset _position;
   int _hp;
+  int _animState = 0;
 
   /// 无敌状态
   bool _invincible = false;
@@ -51,13 +54,31 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     _position = Offset(getScreenWidth(context) / 2 - _playerW / 2,
         getScreenHeight(context) - 80);
 
+    _stateViews.addAll([
+      Image.asset(
+        "images/player_state1.png",
+        width: _playerW,
+        height: _playerH,
+        fit: BoxFit.fill,
+      ),
+      Image.asset(
+        "images/player_state2.png",
+        width: _playerW,
+        height: _playerH,
+        fit: BoxFit.fill,
+      ),
+    ]);
+
     bindSub(TimerUtil.renderStream.listen((_) => render()));
+    bindSub(TimerUtil.updateStream.listen((_) => update()));
   }
 
   @override
   void dispose() {
     _posStream.close();
     _showStream.close();
+    _stateStream.close();
+    _stateViews.clear();
 
     super.dispose();
   }
@@ -88,9 +109,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
                       return AnimatedOpacity(
                         opacity: show ? 1.0 : 0.3,
                         duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          Icons.airplanemode_active,
-                          size: _playerH,
+                        child: StreamBuilder(
+                          stream: _stateStream.stream,
+                          initialData: 0,
+                          builder: (context, snapshot) {
+                            final state = snapshot.data;
+
+                            return _stateViews[state];
+                          },
                         ),
                       );
                     },
@@ -117,7 +143,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   }
 
   @override
-  void update() {}
+  void update() {
+    _animState++;
+    if (_animState >= 40) {
+      _animState = 0;
+    }
+
+    streamAdd(_stateStream, _animState ~/ 20);
+  }
 
   /// 调用该方法表示手指移动了多少像素
   void move(double xNum, double yNum) async {

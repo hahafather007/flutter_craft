@@ -28,6 +28,7 @@ class _PlayerBullet01State extends BaseBulletState<PlayerBullet01> {
       "images/player_bullet01.png",
       width: _bulletW,
       height: _bulletH,
+      fit: BoxFit.fill,
     );
   }
 
