@@ -10,11 +10,11 @@ class EnemyView extends StatefulWidget {
   @override
   State createState() => _state;
 
-  List<BaseCraftView> get enemies => _state._enemies;
+  List<BaseEnemyView> get enemies => _state._enemies;
 }
 
 class _EnemyState extends BaseState<EnemyView> {
-  final _enemies = List<BaseCraftView>();
+  final _enemies = List<BaseEnemyView>();
 
   @override
   void init() {

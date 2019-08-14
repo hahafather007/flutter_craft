@@ -53,21 +53,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     _hp = 3;
     _position = Offset(getScreenWidth(context) / 2 - _playerW / 2,
         getScreenHeight(context) - 80);
-
-    _stateViews.addAll([
-      Image.asset(
-        "images/player_state1.png",
+    _stateViews.addAll(List.generate(4, (index) {
+      return Image.asset(
+        "images/player_state${index + 1}.png",
         width: _playerW,
         height: _playerH,
         fit: BoxFit.fill,
-      ),
-      Image.asset(
-        "images/player_state2.png",
-        width: _playerW,
-        height: _playerH,
-        fit: BoxFit.fill,
-      ),
-    ]);
+      );
+    }));
 
     bindSub(TimerUtil.renderStream.listen((_) => render()));
     bindSub(TimerUtil.updateStream.listen((_) => update()));
@@ -145,11 +138,11 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   @override
   void update() {
     _animState++;
-    if (_animState >= 40) {
+    if (_animState >= 60) {
       _animState = 0;
     }
 
-    streamAdd(_stateStream, _animState ~/ 20);
+    streamAdd(_stateStream, _animState ~/ 15);
   }
 
   /// 调用该方法表示手指移动了多少像素
@@ -178,8 +171,9 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
       return null;
     }
 
-    return Rect.fromPoints(
-        _position, Offset(_position.dx + _playerW, _position.dy + _playerH));
+    // 忽略掉尾部的火焰
+    return Rect.fromPoints(_position,
+        Offset(_position.dx + _playerW, _position.dy + _playerH / 4 * 3));
   }
 
   @override

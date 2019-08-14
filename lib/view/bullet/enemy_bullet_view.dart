@@ -11,7 +11,7 @@ import 'dart:async';
 class EnemyBulletView extends StatefulWidget {
   final _state = _EnemyBulletState();
 
-  final List<BaseCraftView> enemies;
+  final List<BaseEnemyView> enemies;
   final PlayerView player;
 
   EnemyBulletView({@required this.enemies, @required this.player});

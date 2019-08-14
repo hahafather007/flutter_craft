@@ -6,7 +6,7 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/base_craft.dart';
 
 /// 所有敌机的基础类
-abstract class BaseCraftView extends StatefulWidget with BaseFrame, BaseCraft {
+abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   final BaseCraftState state = null;
 
   @override
@@ -42,7 +42,7 @@ abstract class BaseCraftView extends StatefulWidget with BaseFrame, BaseCraft {
 }
 
 /// 所有敌机的基础类
-abstract class BaseCraftState<T extends BaseCraftView> extends BaseState<T>
+abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     with BaseFrame, BaseCraft {
   final posStream = StreamController<Offset>();
   final random = Random.secure();

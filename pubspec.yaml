@@ -30,5 +30,7 @@ flutter:
     - images/player_bullet01.png
     - images/player_state1.png
     - images/player_state2.png
+    - images/player_state3.png
+    - images/player_state4.png
     - assets/game_bg.mp3
     - assets/player_bullet.wav

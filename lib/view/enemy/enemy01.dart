@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'base_enemy.dart';
 import 'package:flutter_craft/utils/system_util.dart';
-import 'package:flutter_craft/common/settings.dart';
 
-class Enemy01 extends BaseCraftView {
+class Enemy01 extends BaseEnemyView {
   final _state = _Enemy01State();
 
   @override
-  BaseCraftState<BaseCraftView> get state => _state;
+  BaseCraftState<BaseEnemyView> get state => _state;
 
   @override
   bool get canAttack => _state.canAttack;

@@ -45,9 +45,21 @@ class GameState extends BaseState<GamePage> {
           }
         }
       });
-//      _playerBulletView.bullets.forEach((bullet){
-//
-//      });
+    }));
+
+    // 检测敌机是否被击中
+    bindSub(TimerUtil.updateStream.listen((_) async {
+      _playerBulletView.bullets.forEach((bullet) {
+        for (final enemy in _enemyView.enemies) {
+          if (bullet.getRect() != null && enemy.getRect() != null) {
+            if (bullet.getRect().overlaps(enemy.getRect())) {
+              enemy.attack(1);
+              bullet.useBullet();
+              break;
+            }
+          }
+        }
+      });
     }));
   }
 
