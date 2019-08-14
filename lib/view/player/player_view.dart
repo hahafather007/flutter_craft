@@ -44,6 +44,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   Offset _position;
   int _hp;
   int _animState = 0;
+  int _animStateNum = 0;
 
   /// 无敌状态
   bool _invincible = false;
@@ -133,6 +134,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     if (_hp == null || _position == null) return;
 
     streamAdd(_posStream, _position);
+    streamAdd(_stateStream, _animStateNum);
   }
 
   @override
@@ -142,7 +144,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
       _animState = 0;
     }
 
-    streamAdd(_stateStream, _animState ~/ 15);
+    _animStateNum = _animState ~/ 15;
   }
 
   /// 调用该方法表示手指移动了多少像素

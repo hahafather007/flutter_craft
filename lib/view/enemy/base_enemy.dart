@@ -49,7 +49,8 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
   final random = Random.secure();
 
   int hp;
-  int boomState;
+  int _boomState;
+  int _boomStateNum;
   bool isBoom;
   double xMove;
   double yMove;
@@ -67,7 +68,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
 
   @override
   void init() {
-    boomState = 0;
+    _boomState = 0;
     isBoom = false;
   }
 
@@ -76,6 +77,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     if (position == null) return;
 
     streamAdd(posStream, position);
+    streamAdd(boomStateStream, _boomStateNum);
   }
 
   @override
@@ -90,11 +92,11 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     }
 
     if (isBoom && boomViews?.isNotEmpty == true) {
-      boomState++;
-      if (boomState >= 40) {
+      _boomState++;
+      if (_boomState >= 40) {
         isBoom = false;
       } else {
-        streamAdd(boomStateStream, boomState ~/ 10);
+        _boomStateNum = _boomState ~/ 10;
       }
     }
   }

@@ -43,7 +43,7 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
       _bullets.removeWhere((v) => v.canRecycle());
 
       // 随机让敌机发射子弹
-      if (_skipNum >= 2) {
+      if (_skipNum >= 10) {
         _skipNum = 0;
         final index = _random.nextInt(widget.enemies.length);
         final bullet = EnemyBullet01(

@@ -46,7 +46,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> {
       _bullets.removeWhere((v) => v.canRecycle());
 
       // 发射子弹
-      if (_skipNum >= 8) {
+      if (_skipNum >= 10) {
         _skipNum = 0;
         final bullet = PlayerBullet01(
             key: Key("PlayerBullet01${_bulletIndex++}"),

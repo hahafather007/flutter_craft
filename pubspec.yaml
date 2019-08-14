@@ -37,8 +37,29 @@ flutter:
     - images/boom_state2.png
     - images/boom_state3.png
     - images/boom_state4.png
+    - images/home_bg1.jpg
+    - images/home_bg2.jpg
+    - images/home_bg3.jpg
+    - images/home_bg4.jpg
+    - images/home_bg5.jpg
+    - images/home_bg6.jpg
+    - images/home_bg7.jpg
+    - images/home_bg8.jpg
+    - images/home_bg9.jpg
+    - images/home_bg10.jpg
+    - images/home_bg11.jpg
+    - images/home_bg12.jpg
+    - images/home_bg13.jpg
+    - images/home_bg14.jpg
+    - images/home_bg15.jpg
+    - images/home_bg16.jpg
+    - images/home_bg17.jpg
+    - images/home_bg18.jpg
+    - images/home_bg19.jpg
+    - images/home_bg20.jpg
     # 音效
     - assets/game_bg.mp3
+    - assets/home_bg.mp3
     - assets/player_bullet.wav
     - assets/enemy_boom01.mp3
     - assets/enemy_boom02.mp3
