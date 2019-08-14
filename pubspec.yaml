@@ -21,6 +21,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    # 图片
     - images/bg1.jpg
     - images/bg2.jpg
     - images/bullet.png
@@ -36,5 +37,14 @@ flutter:
     - images/boom_state2.png
     - images/boom_state3.png
     - images/boom_state4.png
+    # 音效
     - assets/game_bg.mp3
     - assets/player_bullet.wav
+    - assets/enemy_boom01.mp3
+    - assets/enemy_boom02.mp3
+    - assets/enemy_boom03.mp3
+
+  fonts:
+    - family: AppFont
+      fonts:
+        - asset: fonts/font.ttf

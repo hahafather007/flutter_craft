@@ -35,7 +35,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> {
     int soundId;
     rootBundle.load("assets/player_bullet.wav").then((data) async {
       soundId = await _pool.load(data);
-      _pool.setVolume(soundId: soundId, volume: 0.15);
+      _pool.setVolume(soundId: soundId, volume: 0.1);
     });
 
     // 创建玩家的子弹

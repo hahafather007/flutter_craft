@@ -91,9 +91,9 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
 
     if (isBoom && boomViews?.isNotEmpty == true) {
       boomState++;
-      if(boomState>=40){
+      if (boomState >= 40) {
         isBoom = false;
-      }else {
+      } else {
         streamAdd(boomStateStream, boomState ~/ 10);
       }
     }

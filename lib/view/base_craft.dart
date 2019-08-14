@@ -8,8 +8,8 @@ abstract class BaseCraft {
   Rect getRect();
 
   /// 被击中的方法
-  /// 返回方法表示是否扑街
-  bool attack(int value);
+  /// 返回方法表示是游戏得分
+  int attack(int value);
 
   /// 能付被击中
   bool get canAttack;

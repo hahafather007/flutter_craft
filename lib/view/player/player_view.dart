@@ -30,7 +30,7 @@ class PlayerView extends StatefulWidget with BaseCraft {
   bool get canAttack => _state.canAttack;
 
   @override
-  bool attack(int value) => _state.attack(value);
+  int attack(int value) => _state.attack(value);
 }
 
 class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
@@ -189,9 +189,9 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   bool get canAttack => !_invincible;
 
   @override
-  bool attack(int value) {
+  int attack(int value) {
     if (_invincible) {
-      return false;
+      return 0;
     }
 
     _hp -= value;
@@ -201,7 +201,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
       _showInvincible();
     }
 
-    return _hp <= 0;
+    return 0;
   }
 
   /// 显示无敌时的闪烁效果
