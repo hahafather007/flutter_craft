@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'base_bullet.dart';
 
-class PlayerBullet01 extends BaseBulletView {
-  final _state = _PlayerBullet01State();
+class PlayerBullet02 extends BaseBulletView {
+  final _state = _PlayerBullet02State();
 
   final Offset playerPos;
 
-  PlayerBullet01({Key key, @required this.playerPos}) : super(key: key);
+  PlayerBullet02({Key key, @required this.playerPos}) : super(key: key);
 
   @override
   BaseBulletState<BaseBulletView> get state => _state;
 }
 
-class _PlayerBullet01State extends BaseBulletState<PlayerBullet01> {
-  final _bulletW = 7.5;
+class _PlayerBullet02State extends BaseBulletState<PlayerBullet02> {
+  final _bulletW = 15.0;
   final _bulletH = 16.0;
 
   Widget _bulletView;
@@ -23,10 +23,10 @@ class _PlayerBullet01State extends BaseBulletState<PlayerBullet01> {
     position = Offset(widget.playerPos.dx - _bulletW / 2, widget.playerPos.dy);
     xMove = 0;
     yMove = -5;
-    bulletFire = 1;
+    bulletFire = 2;
 
     _bulletView = Image.asset(
-      "images/player_bullet1.png",
+      "images/player_bullet2.png",
       width: _bulletW,
       height: _bulletH,
       fit: BoxFit.fill,

@@ -126,7 +126,7 @@ class GameState extends BaseState<GamePage> with BaseFrame {
       _enemyBulletView.bullets.forEach((bullet) {
         if (bullet.getRect() != null && _playerView.getRect() != null) {
           if (bullet.getRect().overlaps(_playerView.getRect())) {
-            _playerView.attack(1);
+            _playerView.attack(bullet.bulletFire);
             bullet.useBullet();
           }
         }
@@ -142,7 +142,7 @@ class GameState extends BaseState<GamePage> with BaseFrame {
 
         if (bullet.getRect() != null && enemy.getRect() != null) {
           if (bullet.getRect().overlaps(enemy.getRect())) {
-            final add = enemy.attack(1);
+            final add = enemy.attack(bullet.bulletFire);
             if (add > 0) {
               _score += add;
               _pool.play(_enemySoundId);

@@ -24,6 +24,7 @@ class _EnemyBullet01State extends BaseBulletState<EnemyBullet01> {
 
   @override
   void init() {
+    bulletFire = 1;
     position = Offset(widget.enemyPos.dx - _bulletW / 2, widget.enemyPos.dy);
     final xLength = widget.playerPos.dx - widget.enemyPos.dx;
     final yLength = widget.playerPos.dy - widget.enemyPos.dy;

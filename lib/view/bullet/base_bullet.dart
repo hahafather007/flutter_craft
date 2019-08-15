@@ -30,6 +30,9 @@ abstract class BaseBulletView extends StatefulWidget with BaseFrame {
     return state.canRecycle();
   }
 
+  /// 子弹的伤害
+  int get bulletFire => state.bulletFire;
+
   void useBullet() => state.useBullet();
 }
 
@@ -41,6 +44,7 @@ abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
   double xMove;
   double yMove;
   Offset position;
+  int bulletFire = 1;
 
   /// 获取当前的矩形区域
   Rect getRect();

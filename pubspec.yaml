@@ -24,11 +24,12 @@ flutter:
     # 图片
     - images/bg1.jpg
     - images/bg2.jpg
-    - images/bullet.png
+    - images/player_bullet1.png
+    - images/player_bullet2.png
+    - images/player_bullet3.png
     - images/enemy01.png
     - images/enemy02.png
     - images/enemy03.png
-    - images/player_bullet01.png
     - images/player_state1.png
     - images/player_state2.png
     - images/player_state3.png

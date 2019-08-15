@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'base_bullet.dart';
 import 'player_bullet01.dart';
+import 'player_bullet02.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
@@ -48,8 +49,8 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> {
       // 发射子弹
       if (_skipNum >= 10) {
         _skipNum = 0;
-        final bullet = PlayerBullet01(
-            key: Key("PlayerBullet01${_bulletIndex++}"),
+        final bullet = PlayerBullet02(
+            key: Key("PlayerBullet02${_bulletIndex++}"),
             playerPos: widget.player.getFirePos());
         _bullets.add(bullet);
         if (soundId != null) {
