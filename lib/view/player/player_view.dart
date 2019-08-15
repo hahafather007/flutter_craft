@@ -173,8 +173,8 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
       return null;
     }
 
-    // 忽略掉尾部的火焰
-    return Rect.fromPoints(_position,
+    // 忽略部分位置
+    return Rect.fromPoints(Offset(_position.dx, _position.dy + _playerH / 8),
         Offset(_position.dx + _playerW, _position.dy + _playerH / 4 * 3));
   }
 

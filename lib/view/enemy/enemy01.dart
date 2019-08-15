@@ -90,8 +90,8 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   Rect getRect() {
-    return Rect.fromPoints(
-        position, Offset(position.dx + _enemyW, position.dy + _enemyH));
+    return Rect.fromPoints(Offset(position.dx, position.dy + _enemyH / 8),
+        Offset(position.dx + _enemyW, position.dy + _enemyH / 5 * 4));
   }
 
   @override
