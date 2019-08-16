@@ -19,7 +19,9 @@ class GamePage extends StatefulWidget {
   State createState() => GameState();
 }
 
-class GameState extends BaseState<GamePage> with BaseFrame {
+class GameState extends BaseState<GamePage>
+    with BaseFrame, WidgetsBindingObserver {
+  final _pauseStream = StreamController<bool>();
   final _scoreStream = StreamController<int>();
   final _pool = Soundpool(maxStreams: 10);
 
@@ -31,6 +33,8 @@ class GameState extends BaseState<GamePage> with BaseFrame {
 
   /// 游戏得分
   int _score = 0;
+
+  /// 敌机爆炸音效
   int _enemySoundId;
 
   @override
@@ -53,6 +57,7 @@ class GameState extends BaseState<GamePage> with BaseFrame {
 
     bindSub(TimerUtil.updateStream.listen((_) => update()));
     bindSub(TimerUtil.renderStream.listen((_) => render()));
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -60,8 +65,19 @@ class GameState extends BaseState<GamePage> with BaseFrame {
     _audioPlayer?.release();
     _pool.release();
     _scoreStream.close();
+    _pauseStream.close();
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.paused) {
+      _pause();
+    }
   }
 
   @override
@@ -86,8 +102,53 @@ class GameState extends BaseState<GamePage> with BaseFrame {
 
           // 得分
           _buildScoreView(),
+
+          // 暂停
+          _buildPauseView(),
         ],
       ),
+    );
+  }
+
+  /// 暂停按钮及视图
+  Widget _buildPauseView() {
+    return StreamBuilder(
+      stream: _pauseStream.stream,
+      initialData: false,
+      builder: (context, snapshot) {
+        final isPause = snapshot.data;
+
+        return Stack(
+          children: <Widget>[
+            Positioned(
+              top: getStatusHeight(context) + 28,
+              right: 14,
+              child: GestureDetector(
+                onTap: () {
+                  if (isPause) {
+                    _resume();
+                  } else {
+                    _pause();
+                  }
+                },
+                child: Icon(
+                  isPause ? Icons.play_arrow : Icons.pause,
+                  size: 32,
+                  color: Colors.white70,
+                ),
+              ),
+            ),
+            Center(
+              child: isPause
+                  ? Text(
+                      "暂停中",
+                      style: TextStyle(fontSize: 36, color: Colors.white70),
+                    )
+                  : Container(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -105,7 +166,7 @@ class GameState extends BaseState<GamePage> with BaseFrame {
           return Text(
             "得分：$score",
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               color: Colors.white70,
             ),
           );
@@ -153,6 +214,18 @@ class GameState extends BaseState<GamePage> with BaseFrame {
         }
       }
     });
+  }
+
+  void _pause() {
+    TimerUtil.pause();
+    _audioPlayer?.pause();
+    streamAdd(_pauseStream, true);
+  }
+
+  void _resume() {
+    TimerUtil.resume();
+    _audioPlayer?.resume();
+    streamAdd(_pauseStream, false);
   }
 
   @override

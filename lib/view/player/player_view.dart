@@ -149,6 +149,8 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   /// 调用该方法表示手指移动了多少像素
   void move(double xNum, double yNum) async {
+    if (TimerUtil.isPause) return;
+
     var dx = _position.dx + xNum;
     var dy = _position.dy + yNum;
 
