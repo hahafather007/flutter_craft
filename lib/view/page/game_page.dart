@@ -12,7 +12,6 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
 
 class GamePage extends StatefulWidget {
   @override

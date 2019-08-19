@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/view/base_state.dart';
-import 'dart:async';
 
 abstract class BaseBulletView extends StatefulWidget with BaseFrame {
   final BaseBulletState state = null;

@@ -4,7 +4,6 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'dart:math';
-import 'dart:async';
 
 /// 游戏进行中的背景
 class GameGround extends StatefulWidget {

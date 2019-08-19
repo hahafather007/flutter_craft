@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter_craft/common/streams.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_craft/common/settings.dart';
@@ -30,7 +29,7 @@ class TimerUtil {
   }
 
   static void changeFrame() async {
-    final seconds = Settings.IS_FRAME60 ? 16 : 33;
+    final seconds = Settings.isFrame60 ? 16 : 33;
 
     await _sub1?.cancel();
     _sub1 = Observable.periodic(Duration(milliseconds: seconds))

@@ -1,7 +1,6 @@
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/view/base_craft.dart';
@@ -186,6 +185,10 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   }
 
   Offset getCenterPos() {
+    if (_position == null) {
+      return null;
+    }
+
     return Offset(_position.dx + _playerW / 2, _position.dy + _playerH / 2);
   }
 

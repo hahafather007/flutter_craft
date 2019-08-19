@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart' show protected;
+export 'dart:async';
 
 abstract class StreamSubController {
   final _subList = List<StreamSubscription>();

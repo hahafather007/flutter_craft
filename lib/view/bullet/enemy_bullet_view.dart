@@ -5,8 +5,8 @@ import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
+import 'package:flutter_craft/view/enemy/enemy01.dart';
 import 'dart:math';
-import 'dart:async';
 
 class EnemyBulletView extends StatefulWidget {
   final _state = _EnemyBulletState();
@@ -27,30 +27,36 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> {
   final _bullets = List<BaseBulletView>();
   final _random = Random.secure();
 
-  int _skipNum = 0;
+  int _enemy01Skip = 0;
   int _bulletIndex = 0;
 
   @override
   void init() {
     // 创建敌机的子弹
     bindSub(TimerUtil.updateStream
-        .map((_) => _skipNum++)
         .where((_) => widget.enemies.isNotEmpty)
         .listen((_) async {
       _bullets.forEach((v) => v.update());
+      _enemy01Skip++;
 
       // 清理可回收的子弹
       _bullets.removeWhere((v) => v.canRecycle());
 
       // 随机让敌机发射子弹
-      if (_skipNum >= 10) {
-        _skipNum = 0;
-        final index = _random.nextInt(widget.enemies.length);
-        final bullet = EnemyBullet01(
-            key: Key("EnemyBullet01${_bulletIndex++}"),
-            enemyPos: widget.enemies[index].getFirePos(),
-            playerPos: widget.player.getCenterPos());
-        _bullets.add(bullet);
+      if (_enemy01Skip >= 20) {
+        final enemy01List = widget.enemies.where((v) => v is Enemy01);
+        if (enemy01List.isNotEmpty) {
+          final index = _random.nextInt(enemy01List.length);
+          if (widget.enemies[index].getFirePos() != null &&
+              widget.player.getCenterPos() != null) {
+            _enemy01Skip = 0;
+            _bullets.add(EnemyBullet01(
+              key: Key("EnemyBullet01${_bulletIndex++}"),
+              enemyPos: widget.enemies[index].getFirePos(),
+              playerPos: widget.player.getCenterPos(),
+            ));
+          }
+        }
       }
     }));
 

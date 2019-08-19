@@ -16,5 +16,12 @@ abstract class BaseState<T extends StatefulWidget> extends State<T>
     }
   }
 
+  @override
+  void dispose() {
+    subDispose();
+
+    super.dispose();
+  }
+
   void init();
 }

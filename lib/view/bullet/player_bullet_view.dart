@@ -8,7 +8,7 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
+import 'package:flutter_craft/common/settings.dart';
 
 class PlayerBulletView extends StatefulWidget {
   final _state = _PlayerBulletState();
@@ -50,22 +50,30 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> {
       // 发射子弹
       if (_skipNum >= 10) {
         _skipNum = 0;
-//        final bullet = PlayerBullet01(
-//            key: Key("PlayerBullet01${_bulletIndex++}"),
-//            playerPos: widget.player.getFirePos());
-//        _bullets.add(bullet);
-//        final bullet = PlayerBullet02(
-//            key: Key("PlayerBullet02${_bulletIndex++}"),
-//            playerPos: widget.player.getFirePos());
-//        _bullets.add(bullet);
-        [-1, 0, 1].forEach((index) {
-          final bullet = PlayerBullet03(
-            key: Key("PlayerBullet03${_bulletIndex++}"),
-            playerPos: widget.player.getFirePos(),
-            bulletType: index,
-          );
-          _bullets.add(bullet);
-        });
+        switch (Settings.playShootMood) {
+          case PlayShootMood.SINGLE:
+            _bullets.add(PlayerBullet01(
+              key: Key("PlayerBullet01${_bulletIndex++}"),
+              playerPos: widget.player.getFirePos(),
+            ));
+            break;
+          case PlayShootMood.DOUBLE:
+            _bullets.add(PlayerBullet02(
+              key: Key("PlayerBullet02${_bulletIndex++}"),
+              playerPos: widget.player.getFirePos(),
+            ));
+            break;
+          case PlayShootMood.TREBLE:
+            [-1, 0, 1].forEach((index) {
+              final bullet = PlayerBullet03(
+                key: Key("PlayerBullet03${_bulletIndex++}"),
+                playerPos: widget.player.getFirePos(),
+                bulletType: index,
+              );
+              _bullets.add(bullet);
+            });
+            break;
+        }
         if (soundId != null) {
           _pool.play(soundId);
         }

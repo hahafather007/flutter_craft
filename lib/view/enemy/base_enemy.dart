@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:math';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/view/base_state.dart';
@@ -8,6 +7,8 @@ import 'package:flutter_craft/view/base_craft.dart';
 /// 所有敌机的基础类
 abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   final BaseCraftState state = null;
+
+  BaseEnemyView({Key key}):super(key:key);
 
   @override
   State<StatefulWidget> createState() => state;
@@ -48,7 +49,8 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
   final boomStateStream = StreamController<int>();
   final random = Random.secure();
 
-  int hp;
+  int hp = 1;
+
   int _boomState;
   int _boomStateNum;
   bool isBoom;
@@ -87,10 +89,6 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
       return;
     }
     position = Offset(position.dx + xMove, position.dy + yMove);
-
-    if (canRecycle() && !isBoom) {
-      init();
-    }
 
     if (isBoom && boomViews?.isNotEmpty == true) {
       _boomState++;

@@ -14,31 +14,56 @@ class EnemyView extends StatefulWidget {
 }
 
 class _EnemyState extends BaseState<EnemyView> {
+  final _ememyStream = StreamController<List<BaseEnemyView>>();
   final _enemies = List<BaseEnemyView>();
+
+  int _enemy01Skip = 0;
+  int _enemyIndex = 0;
 
   @override
   void init() {
     // 初始化每种类型的敌机
-    _enemies.addAll(List.generate(20, (_) => Enemy01()));
+    bindSub(TimerUtil.updateStream.listen((_) async {
+      _enemies.forEach((v) => v.update());
+      _enemy01Skip++;
 
-    bindSub(TimerUtil.updateStream
-        .listen((_) => _enemies.forEach((v) => v.update())));
-    bindSub(TimerUtil.renderStream
-        .listen((_) => _enemies.forEach((v) => v.render())));
+      // 回收超出屏幕的飞机
+      _enemies.removeWhere((v) => v.canRecycle());
+
+      // 生成[Enemy01]
+      if (_enemy01Skip >= 30) {
+        _enemy01Skip = 0;
+        _enemies.add(Enemy01(
+          key: Key("Enemy01${_enemyIndex++}"),
+        ));
+      }
+    }));
+    bindSub(TimerUtil.renderStream.listen((_) {
+      streamAdd(_ememyStream, _enemies);
+      _enemies.forEach((v) => v.render());
+    }));
   }
 
   @override
   void dispose() {
     _enemies.clear();
-    subDispose();
+    _ememyStream.close();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: _enemies,
+    return StreamBuilder(
+      stream: _ememyStream.stream,
+      initialData: _enemies,
+      builder: (context, snapshot) {
+        final enemies = snapshot.data;
+
+        return Stack(
+          children: enemies,
+        );
+      },
     );
   }
 }

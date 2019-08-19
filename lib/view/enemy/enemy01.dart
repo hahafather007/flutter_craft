@@ -5,6 +5,8 @@ import 'package:flutter_craft/utils/system_util.dart';
 class Enemy01 extends BaseEnemyView {
   final _state = _Enemy01State();
 
+  Enemy01({Key key}) : super(key: key);
+
   @override
   BaseCraftState<BaseEnemyView> get state => _state;
 
@@ -78,7 +80,7 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   bool canRecycle() {
-    if (position == null) {
+    if (position == null || isBoom) {
       return false;
     }
 
@@ -90,12 +92,20 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   Rect getRect() {
+    if (position == null) {
+      return null;
+    }
+
     return Rect.fromPoints(Offset(position.dx, position.dy + _enemyH / 8),
         Offset(position.dx + _enemyW, position.dy + _enemyH / 5 * 4));
   }
 
   @override
   Offset getFirePos() {
+    if (position == null) {
+      return null;
+    }
+
     return Offset(position.dx + _enemyW / 2, position.dy + _enemyH);
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/utils/system_util.dart';
-import 'dart:async';
 
 /// 主页的背景
 class HomeGround extends StatefulWidget {
