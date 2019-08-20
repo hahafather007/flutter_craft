@@ -12,6 +12,7 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_craft/common/settings.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class GameState extends BaseState<GamePage>
     with BaseFrame, WidgetsBindingObserver {
   final _pauseStream = StreamController<bool>();
   final _scoreStream = StreamController<int>();
+  final _rocketStream = StreamController<int>();
   final _pool = Soundpool(maxStreams: 10);
 
   AudioPlayer _audioPlayer;
@@ -33,6 +35,9 @@ class GameState extends BaseState<GamePage>
 
   /// 游戏得分
   int _score = 0;
+
+  /// 火箭弹数量
+  int _rocketNum = Settings.rocketNum;
 
   /// 敌机爆炸音效
   int _enemySoundId;
@@ -67,6 +72,7 @@ class GameState extends BaseState<GamePage>
     _pool.release();
     _scoreStream.close();
     _pauseStream.close();
+    _rocketStream.close();
     WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
@@ -106,6 +112,9 @@ class GameState extends BaseState<GamePage>
 
           // 暂停
           _buildPauseView(),
+
+          // 火箭弹按钮
+          _buildRocketBtn(),
         ],
       ),
     );
@@ -150,6 +159,47 @@ class GameState extends BaseState<GamePage>
           ],
         );
       },
+    );
+  }
+
+  /// 火箭弹按钮
+  Widget _buildRocketBtn() {
+    return Positioned(
+      bottom: 40,
+      left: 14,
+      child: StreamBuilder(
+        stream: _rocketStream.stream,
+        initialData: _rocketNum,
+        builder: (context, snapshot) {
+          final num = snapshot.data;
+
+          return GestureDetector(
+            onTap: () {
+              if (num > 0) {
+                _playerBulletView.fireRocket();
+                _rocketNum -- ;
+              }
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Image.asset(
+                  "images/rocket_btn.png",
+                  width: 48,
+                  height: 48,
+                ),
+                Text(
+                  "$num",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -244,5 +294,6 @@ class GameState extends BaseState<GamePage>
     _enemyBulletView.render();
 
     streamAdd(_scoreStream, _score);
+    streamAdd(_rocketStream, _rocketNum);
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -44,16 +45,19 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          // 背景图
-          _ground,
+    return WillPopScope(
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            // 背景图
+            _ground,
 
-          // 按钮
-          _buildBtns(),
-        ],
+            // 按钮
+            _buildBtns(),
+          ],
+        ),
       ),
+      onWillPop: () async => false,
     );
   }
 
@@ -95,7 +99,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
               alignment: Alignment.topCenter,
               child: _buildInkBtn(
                 text: "退出",
-                onTap: () async {},
+                onTap: () => SystemNavigator.pop(),
               ),
             ),
           ),

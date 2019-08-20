@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'base_bullet.dart';
 import 'dart:async';
 import 'package:flutter_craft/common/streams.dart';
+import 'package:flutter_craft/common/settings.dart';
 
 /// 火箭弹
 class PlayerRocket extends BaseBulletView {
@@ -31,7 +32,7 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
     position = Offset(widget.playerPos.dx - _bulletW / 2, widget.playerPos.dy);
     xMove = 0;
     yMove = -1;
-    bulletFire = 10;
+    bulletFire = Settings.rocketAttack;
 
     _rocketViews.addAll(List.generate(3, (index) {
       return Image.asset(

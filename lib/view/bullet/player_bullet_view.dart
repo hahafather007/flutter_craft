@@ -37,6 +37,10 @@ class PlayerBulletView extends StatefulWidget with BaseFrame {
   void render() {
     _state.render();
   }
+
+  void fireRocket() {
+    _state.fireRocket();
+  }
 }
 
 class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
