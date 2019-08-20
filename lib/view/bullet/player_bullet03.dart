@@ -30,16 +30,16 @@ class _PlayerBullet03State extends BaseBulletState<PlayerBullet03> {
     position = Offset(widget.playerPos.dx - _bulletW / 2, widget.playerPos.dy);
     switch (widget.bulletType) {
       case -1:
-        xMove = -1;
-        yMove = -sqrt(24);
+        xMove = -0.5;
+        yMove = -sqrt(24.75);
         break;
       case 0:
         xMove = 0;
         yMove = -5;
         break;
       case 1:
-        xMove = 1;
-        yMove = -sqrt(24);
+        xMove = 0.5;
+        yMove = -sqrt(24.75);
         break;
     }
     bulletFire = 1;

@@ -62,10 +62,12 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
     return Positioned.fill(
       child: Column(
         children: <Widget>[
+          // 开始游戏
           Expanded(
-            child: Center(
+            child: Container(
+              alignment: Alignment.bottomCenter,
               child: _buildInkBtn(
-                text: "Play",
+                text: "开始",
                 onTap: () async {
                   _isPause = true;
                   _audioPlayer?.pause();
@@ -73,6 +75,27 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
                   _isPause = false;
                   _audioPlayer?.resume();
                 },
+              ),
+            ),
+          ),
+
+          // 商店
+          Expanded(
+            child: Center(
+              child: _buildInkBtn(
+                text: "商店",
+                onTap: () async {},
+              ),
+            ),
+          ),
+
+          // 退出
+          Expanded(
+            child: Container(
+              alignment: Alignment.topCenter,
+              child: _buildInkBtn(
+                text: "退出",
+                onTap: () async {},
               ),
             ),
           ),

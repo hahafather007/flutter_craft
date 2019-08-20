@@ -94,7 +94,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
     _bullets.removeWhere((v) => v.canRecycle());
 
     // 发射子弹
-    if (_skipNum >= 10) {
+    if (_skipNum >= Settings.playerFire) {
       _skipNum = 0;
       switch (Settings.playShootMood) {
         case PlayShootMood.SINGLE:
