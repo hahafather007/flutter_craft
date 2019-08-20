@@ -2,18 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/enemy/enemy01.dart';
 import 'package:flutter_craft/view/base_state.dart';
-import 'package:flutter_craft/utils/timer_util.dart';
+import 'package:flutter_craft/view/base_frame.dart';
 
-class EnemyView extends StatefulWidget {
+class EnemyView extends StatefulWidget with BaseFrame {
   final _state = _EnemyState();
 
   @override
   State createState() => _state;
 
   List<BaseEnemyView> get enemies => _state._enemies;
+
+  @override
+  bool canRecycle() {
+    return _state.canRecycle();
+  }
+
+  @override
+  void update() {
+    _state.update();
+  }
+
+  @override
+  void render() {
+    _state.render();
+  }
 }
 
-class _EnemyState extends BaseState<EnemyView> {
+class _EnemyState extends BaseState<EnemyView> with BaseFrame {
   final _ememyStream = StreamController<List<BaseEnemyView>>();
   final _enemies = List<BaseEnemyView>();
 
@@ -21,28 +36,7 @@ class _EnemyState extends BaseState<EnemyView> {
   int _enemyIndex = 0;
 
   @override
-  void init() {
-    // 初始化每种类型的敌机
-    bindSub(TimerUtil.updateStream.listen((_) async {
-      _enemies.forEach((v) => v.update());
-      _enemy01Skip++;
-
-      // 回收超出屏幕的飞机
-      _enemies.removeWhere((v) => v.canRecycle());
-
-      // 生成[Enemy01]
-      if (_enemy01Skip >= 30) {
-        _enemy01Skip = 0;
-        _enemies.add(Enemy01(
-          key: Key("Enemy01${_enemyIndex++}"),
-        ));
-      }
-    }));
-    bindSub(TimerUtil.renderStream.listen((_) {
-      streamAdd(_ememyStream, _enemies);
-      _enemies.forEach((v) => v.render());
-    }));
-  }
+  void init() {}
 
   @override
   void dispose() {
@@ -65,5 +59,33 @@ class _EnemyState extends BaseState<EnemyView> {
         );
       },
     );
+  }
+
+  @override
+  bool canRecycle() {
+    return false;
+  }
+
+  @override
+  void update() {
+    _enemies.forEach((v) => v.update());
+    _enemy01Skip++;
+
+    // 回收超出屏幕的飞机
+    _enemies.removeWhere((v) => v.canRecycle());
+
+    // 生成[Enemy01]
+    if (_enemy01Skip >= 30) {
+      _enemy01Skip = 0;
+      _enemies.add(Enemy01(
+        key: Key("Enemy01${_enemyIndex++}"),
+      ));
+    }
+  }
+
+  @override
+  void render() {
+    streamAdd(_ememyStream, _enemies);
+    _enemies.forEach((v) => v.render());
   }
 }

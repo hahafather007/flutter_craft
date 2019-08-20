@@ -17,6 +17,8 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
   HomeGround _ground;
   AudioPlayer _audioPlayer;
 
+  bool _isPause = false;
+
   @override
   void init() {
     TimerUtil.init();
@@ -26,6 +28,10 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
     // bgm
 //    final audio = AudioCache();
 //    audio.loop("home_bg.mp3").then((v) => _audioPlayer = v);
+    bindSub(
+        TimerUtil.renderStream.where((_) => !_isPause).listen((_) => render()));
+    bindSub(
+        TimerUtil.updateStream.where((_) => !_isPause).listen((_) => update()));
   }
 
   @override
@@ -61,11 +67,11 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
               child: _buildInkBtn(
                 text: "Play",
                 onTap: () async {
+                  _isPause = true;
                   _audioPlayer?.pause();
-                  _ground?.pause();
                   await push(context, page: GamePage());
+                  _isPause = false;
                   _audioPlayer?.resume();
-                  _ground?.resume();
                 },
               ),
             ),
@@ -97,10 +103,14 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
   }
 
   @override
-  void render() {}
+  void render() {
+    _ground.render();
+  }
 
   @override
-  void update() {}
+  void update() {
+    _ground.update();
+  }
 
   @override
   bool canRecycle() {

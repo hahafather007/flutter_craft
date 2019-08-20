@@ -5,18 +5,25 @@ import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 
 /// 主页的背景
-class HomeGround extends StatefulWidget {
+class HomeGround extends StatefulWidget with BaseFrame {
   final _state = _HomeGroundState();
 
   @override
   State createState() => _state;
 
-  void pause() {
-    _state.pause();
+  @override
+  bool canRecycle() {
+    return _state.canRecycle();
   }
 
-  void resume() {
-    _state.resume();
+  @override
+  void update() {
+    _state.update();
+  }
+
+  @override
+  void render() {
+    _state.render();
   }
 }
 
@@ -25,15 +32,9 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
 
   int _bgState = 0;
   int _bgStateNum = 0;
-  bool _canShow = true;
 
   @override
-  void init() {
-    bindSub(
-        TimerUtil.updateStream.where((_) => _canShow).listen((_) => update()));
-    bindSub(
-        TimerUtil.renderStream.where((_) => _canShow).listen((_) => render()));
-  }
+  void init() {}
 
   @override
   void dispose() {
@@ -85,13 +86,5 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
   @override
   void render() {
     streamAdd(_bgStateStream, _bgStateNum);
-  }
-
-  void pause() {
-    _canShow = false;
-  }
-
-  void resume() {
-    _canShow = true;
   }
 }

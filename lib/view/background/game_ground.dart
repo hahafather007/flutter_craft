@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/base_frame.dart';
-import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'dart:math';
 
 /// 游戏进行中的背景
-class GameGround extends StatefulWidget {
+class GameGround extends StatefulWidget with BaseFrame {
+  final _state = _GameGroundState();
+
   @override
-  State createState() => _GameGroundState();
+  State createState() => _state;
+
+  @override
+  bool canRecycle() {
+    return _state.canRecycle();
+  }
+
+  @override
+  void update() {
+    _state.update();
+  }
+
+  @override
+  void render() {
+    _state.render();
+  }
 }
 
 class _GameGroundState extends BaseState<GameGround> with BaseFrame {
@@ -30,9 +46,6 @@ class _GameGroundState extends BaseState<GameGround> with BaseFrame {
       height: _imgHeight,
       fit: BoxFit.fill,
     );
-
-    bindSub(TimerUtil.updateStream.listen((_) => update()));
-    bindSub(TimerUtil.renderStream.listen((_) => render()));
   }
 
   @override

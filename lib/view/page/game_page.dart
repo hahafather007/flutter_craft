@@ -29,6 +29,7 @@ class GameState extends BaseState<GamePage>
   PlayerView _playerView;
   EnemyBulletView _enemyBulletView;
   PlayerBulletView _playerBulletView;
+  GameGround _gameGround;
 
   /// 游戏得分
   int _score = 0;
@@ -38,6 +39,7 @@ class GameState extends BaseState<GamePage>
 
   @override
   void init() {
+    _gameGround = GameGround();
     _enemyView = EnemyView();
     _playerView = PlayerView();
     _enemyBulletView =
@@ -85,7 +87,7 @@ class GameState extends BaseState<GamePage>
       body: Stack(
         children: <Widget>[
           // 背景
-          GameGround(),
+          _gameGround,
 
           // 敌机子弹图层
           _enemyBulletView,
@@ -181,6 +183,12 @@ class GameState extends BaseState<GamePage>
 
   @override
   void update() async {
+    _playerView.update();
+    _playerBulletView.update();
+    _enemyView.update();
+    _enemyBulletView.update();
+    _gameGround.update();
+
     // 检测玩家是否被击中
     if (_playerView.canAttack) {
       _enemyBulletView.bullets.forEach((bullet) {
@@ -229,6 +237,12 @@ class GameState extends BaseState<GamePage>
 
   @override
   void render() {
+    _gameGround.render();
+    _playerView.render();
+    _playerBulletView.render();
+    _enemyView.render();
+    _enemyBulletView.render();
+
     streamAdd(_scoreStream, _score);
   }
 }

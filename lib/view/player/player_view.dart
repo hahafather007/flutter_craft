@@ -5,7 +5,7 @@ import 'package:flutter_craft/utils/system_util.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/view/base_craft.dart';
 
-class PlayerView extends StatefulWidget with BaseCraft {
+class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
   final _state = _PlayerState();
 
   @override
@@ -30,6 +30,21 @@ class PlayerView extends StatefulWidget with BaseCraft {
 
   @override
   int attack(int value) => _state.attack(value);
+
+  @override
+  bool canRecycle() {
+    return _state.canRecycle();
+  }
+
+  @override
+  void update() {
+    _state.update();
+  }
+
+  @override
+  void render() {
+    _state.render();
+  }
 }
 
 class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
@@ -44,9 +59,11 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   int _hp;
   int _animState = 0;
   int _animStateNum = 0;
+  int _invincibleNum = 0;
 
   /// 无敌状态
   bool _invincible = false;
+  bool _playerHide = true;
 
   @override
   void init() {
@@ -61,9 +78,6 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
         fit: BoxFit.fill,
       );
     }));
-
-    bindSub(TimerUtil.renderStream.listen((_) => render()));
-    bindSub(TimerUtil.updateStream.listen((_) => update()));
   }
 
   @override
@@ -134,11 +148,19 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
     streamAdd(_posStream, _position);
     streamAdd(_stateStream, _animStateNum);
+    streamAdd(_showStream, _playerHide);
   }
 
   @override
   void update() {
     _animState++;
+    if (_invincible) {
+      _invincibleNum++;
+      _playerHide = (_invincibleNum ~/ 20) % 2 != 0;
+      if (_invincibleNum > 100) {
+        _invincible = false;
+      }
+    }
     if (_animState >= 60) {
       _animState = 0;
     }
@@ -198,27 +220,17 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   @override
   int attack(int value) {
     if (_invincible) {
-      return 0;
+      return _hp;
     }
 
     _hp -= value;
 
     // 无敌状态
     if (_hp > 0) {
-      _showInvincible();
+      _invincible = true;
+      _invincibleNum = 0;
     }
 
-    return 0;
-  }
-
-  /// 显示无敌时的闪烁效果
-  void _showInvincible() async {
-    _invincible = true;
-    await for (final show
-        in Stream.fromIterable([false, true, false, true, false, true])) {
-      streamAdd(_showStream, show);
-      await Future.delayed(const Duration(milliseconds: 300));
-    }
-    _invincible = false;
+    return _hp;
   }
 }
