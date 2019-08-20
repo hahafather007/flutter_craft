@@ -9,6 +9,7 @@ import 'package:soundpool/soundpool.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/common/settings.dart';
+import 'package:flutter_craft/view/bullet/player_rocket.dart';
 
 class PlayerBulletView extends StatefulWidget with BaseFrame {
   final _state = _PlayerBulletState();
