@@ -46,14 +46,21 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
 
   int _skipNum = 0;
   int _bulletIndex = 0;
-  int _soundId;
+  int _bulletSoundId;
+  int _rocketSoundId;
 
   @override
   void init() {
     // 玩家子弹发射音效
     rootBundle.load("assets/player_bullet.wav").then((data) async {
-      _soundId = await _pool.load(data);
-      _pool.setVolume(soundId: _soundId, volume: 0.1);
+      _bulletSoundId = await _pool.load(data);
+      _pool.setVolume(soundId: _bulletSoundId, volume: 0.1);
+    });
+
+    // 火箭弹发射音效
+    rootBundle.load("assets/player_rocket.mp3").then((data) async {
+      _rocketSoundId = await _pool.load(data);
+      _pool.setVolume(soundId: _rocketSoundId, volume: 0.5);
     });
   }
 
@@ -121,9 +128,20 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
           });
           break;
       }
-      if (_soundId != null) {
-        _pool.play(_soundId);
+      if (_bulletSoundId != null) {
+        _pool.play(_bulletSoundId);
       }
+    }
+  }
+
+  /// 发射火箭弹
+  void fireRocket() {
+    _bullets.add(PlayerRocket(
+      key: Key("PlayerRocket${_bulletIndex++}"),
+      playerPos: widget.player.getRocketPos(),
+    ));
+    if (_rocketSoundId != null) {
+      _pool.play(_rocketSoundId);
     }
   }
 

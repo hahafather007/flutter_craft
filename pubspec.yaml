@@ -38,6 +38,18 @@ flutter:
     - images/boom_state2.png
     - images/boom_state3.png
     - images/boom_state4.png
+    - images/boom2_state1.png
+    - images/boom2_state2.png
+    - images/boom2_state3.png
+    - images/boom2_state4.png
+    - images/boom2_state5.png
+    - images/boom2_state6.png
+    - images/boom3_state1.png
+    - images/boom3_state2.png
+    - images/boom3_state3.png
+    - images/boom3_state4.png
+    - images/boom3_state5.png
+    - images/boom3_state6.png
     - images/home_bg1.jpg
     - images/home_bg2.jpg
     - images/home_bg3.jpg
@@ -70,6 +82,7 @@ flutter:
     - assets/enemy_boom01.mp3
     - assets/enemy_boom02.mp3
     - assets/enemy_boom03.mp3
+    - assets/player_rocket.mp3
 
   fonts:
     - family: AppFont

@@ -3,10 +3,10 @@ class Settings {
   static bool isFrame60 = false;
 
   /// 玩家子弹发射间隔帧（越小火力越强，最小为1）
-  static int playerFire = 20;
+  static int playerFire = 25;
 
   /// 玩家子弹的射击模式
-  static PlayShootMood playShootMood = PlayShootMood.TREBLE;
+  static PlayShootMood playShootMood = PlayShootMood.SINGLE;
 }
 
 enum PlayShootMood {

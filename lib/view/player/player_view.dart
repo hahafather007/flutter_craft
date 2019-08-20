@@ -25,7 +25,11 @@ class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
     return _state.getCenterPos();
   }
 
-  @override
+  Offset getRocketPos() {
+    return _state.getRocketPos();
+  }
+
+    @override
   bool get canAttack => _state.canAttack;
 
   @override
@@ -60,6 +64,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   int _animState = 0;
   int _animStateNum = 0;
   int _invincibleNum = 0;
+  bool _isRocketLeft = true;
 
   /// 无敌状态
   bool _invincible = false;
@@ -204,6 +209,13 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   @override
   Offset getFirePos() {
     return Offset(_position.dx + _playerW / 2, _position.dy);
+  }
+
+  /// 火箭弹发射位置（左边一下，右边一下）
+  Offset getRocketPos() {
+    _isRocketLeft = !_isRocketLeft;
+    return Offset(_position.dx + _playerW / 4 * (_isRocketLeft ? 1 : 3),
+        _position.dy + _playerH / 5);
   }
 
   Offset getCenterPos() {

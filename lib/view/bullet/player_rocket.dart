@@ -17,12 +17,14 @@ class PlayerRocket extends BaseBulletView {
 
 class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
   final _stateStream = StreamController<int>();
-  final _bulletW = 8.0;
-  final _bulletH = 37.0;
+  final _bulletW = 6.0;
+  final _bulletH = 30.0;
   final _rocketViews = List<Widget>();
+  final _boomViews = List<Widget>();
 
   int _animState = 0;
   int _animNum = 0;
+  bool _isBoom = false;
 
   @override
   void init() {
@@ -36,6 +38,14 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
         "images/rocket_0${index + 1}.png",
         width: _bulletW,
         height: _bulletH,
+        fit: BoxFit.fill,
+      );
+    }));
+    _boomViews.addAll(List.generate(6, (index) {
+      return Image.asset(
+        "images/boom2_state${index + 1}.png",
+        width: _bulletW * 2.5,
+        height: _bulletW * 2.5,
         fit: BoxFit.fill,
       );
     }));
@@ -65,7 +75,16 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
             initialData: _animState,
             builder: (context, snapshot) {
               final state = snapshot.data;
-              return _rocketViews[state];
+
+              if (!_isBoom) {
+                if (state < 3) {
+                  return _rocketViews[state];
+                } else {
+                  return Container();
+                }
+              } else {
+                return _boomViews[state];
+              }
             },
           ),
         );
@@ -75,7 +94,7 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
 
   @override
   bool canRecycle() {
-    if (bulletUsed) {
+    if (bulletUsed && !_isBoom) {
       return true;
     }
 
@@ -88,15 +107,24 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
 
   @override
   void update() {
-    super.update();
+    if (!_isBoom) {
+      super.update();
 
-    _animNum++;
-    if (_animNum >= 30) {
-      _animNum = 0;
-    }
-    _animState = _animNum ~/ 10;
-    if (yMove != null && yMove > -8) {
-      yMove -= 0.1;
+      _animNum++;
+      if (_animNum >= 30) {
+        _animNum = 0;
+      }
+      _animState = _animNum ~/ 10;
+      if (yMove != null && yMove > -8) {
+        yMove -= 0.1;
+      }
+    } else {
+      _animNum++;
+      if (_animNum >= 60) {
+        _animNum = 59;
+        _isBoom = false;
+      }
+      _animState = _animNum ~/ 10;
     }
   }
 
@@ -105,6 +133,15 @@ class _PlayerRocketState extends BaseBulletState<PlayerRocket> {
     super.render();
 
     streamAdd(_stateStream, _animState);
+  }
+
+  @override
+  void useBullet() {
+    super.useBullet();
+
+    _isBoom = true;
+    _animNum = 0;
+    _animState = 0;
   }
 
   @override

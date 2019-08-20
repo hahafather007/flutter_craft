@@ -8,7 +8,7 @@ import 'package:flutter_craft/view/base_craft.dart';
 abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   final BaseCraftState state = null;
 
-  BaseEnemyView({Key key}):super(key:key);
+  BaseEnemyView({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => state;
@@ -88,7 +88,9 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     if (hp == null || position == null || xMove == null || yMove == null) {
       return;
     }
-    position = Offset(position.dx + xMove, position.dy + yMove);
+    if (!isBoom) {
+      position = Offset(position.dx + xMove, position.dy + yMove);
+    }
 
     if (isBoom && boomViews?.isNotEmpty == true) {
       _boomState++;
