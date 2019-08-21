@@ -53,7 +53,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
 
   int _boomState;
   int _boomStateNum;
-  bool isBoom;
+  bool isBoom = false;
   double xMove;
   double yMove;
   Offset position;

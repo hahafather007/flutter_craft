@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/enemy/enemy01.dart';
+import 'package:flutter_craft/view/enemy/enemy02.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/base_frame.dart';
+import 'dart:math';
 
 class EnemyView extends StatefulWidget with BaseFrame {
   final _state = _EnemyState();
@@ -31,8 +33,13 @@ class EnemyView extends StatefulWidget with BaseFrame {
 class _EnemyState extends BaseState<EnemyView> with BaseFrame {
   final _ememyStream = StreamController<List<BaseEnemyView>>();
   final _enemies = List<BaseEnemyView>();
+  final _random = Random.secure();
 
   int _enemy01Skip = 0;
+  int _enemy02Skip = 0;
+  int _enemy02Num = 0;
+  int _enemy02Create = 0;
+  int _enemy02Type;
   int _enemyIndex = 0;
 
   @override
@@ -67,9 +74,10 @@ class _EnemyState extends BaseState<EnemyView> with BaseFrame {
   }
 
   @override
-  void update() {
+  void update() async {
     _enemies.forEach((v) => v.update());
     _enemy01Skip++;
+    _enemy02Skip++;
 
     // 回收超出屏幕的飞机
     _enemies.removeWhere((v) => v.canRecycle());
@@ -80,6 +88,29 @@ class _EnemyState extends BaseState<EnemyView> with BaseFrame {
       _enemies.add(Enemy01(
         key: Key("Enemy01${_enemyIndex++}"),
       ));
+    }
+    // 生成[Enemy00]
+    if (_enemy02Skip >= 100) {
+      if (_enemy02Type == null) {
+        _enemy02Type = _random.nextInt(7);
+      }
+      if (_enemy02Num >= 10) {
+        _enemy02Skip = 0;
+        _enemy02Num = 0;
+        _enemy02Create = 0;
+        _enemy02Type = null;
+      } else {
+        _enemy02Create++;
+
+        if (_enemy02Create >= 10) {
+          _enemy02Num++;
+          _enemy02Create = 0;
+          _enemies.add(Enemy02(
+            type: _enemy02Type,
+            key: Key("Enemy02${_enemyIndex++}"),
+          ));
+        }
+      }
     }
   }
 
