@@ -12,7 +12,7 @@ class Settings {
   static int rocketNum = 20;
 
   /// 玩家子弹的射击模式
-  static PlayShootMood playShootMood = PlayShootMood.TREBLE;
+  static PlayShootMood playShootMood = PlayShootMood.DOUBLE;
 }
 
 enum PlayShootMood {

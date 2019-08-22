@@ -442,6 +442,7 @@ class GameState extends BaseState<GamePage>
     _enemyView.reset();
     _enemyBulletView.reset();
     _score = 0;
+    _rocketNum = Settings.rocketNum;
     _isGameOver = false;
     _audioPlayer.seek(const Duration());
     streamAdd(_overStream, false);

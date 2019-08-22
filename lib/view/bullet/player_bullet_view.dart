@@ -145,11 +145,12 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
 
   /// 发射火箭弹
   void fireRocket() {
-    if (widget.player.getRocketPos() == null) return;
+    final pos = widget.player.getRocketPos();
+    if (pos == null) return;
 
     _bullets.add(PlayerRocket(
       key: Key("PlayerRocket${_bulletIndex++}"),
-      playerPos: widget.player.getRocketPos(),
+      playerPos: pos,
     ));
     if (_rocketSoundId != null) {
       _pool.play(_rocketSoundId);

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/page/home_page.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+
   runApp(MyApp());
 }
 

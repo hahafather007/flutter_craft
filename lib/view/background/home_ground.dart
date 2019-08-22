@@ -58,13 +58,13 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
 
         return Stack(
           children: List.generate(20, (index) {
-            return Offstage(
-              offstage: state != index,
-              child: Image.asset(
-                "images/home_bg${index + 1}.jpg",
-                width: getScreenWidth(context),
-                height: getScreenHeight(context),
-                fit: BoxFit.fill,
+            return Positioned.fill(
+              child: Offstage(
+                offstage: state != index,
+                child: Image.asset(
+                  "images/home_bg${index + 1}.jpg",
+                  fit: BoxFit.fill,
+                ),
               ),
             );
           }),
