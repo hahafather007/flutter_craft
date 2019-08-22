@@ -193,7 +193,7 @@ class _Enemy02State extends BaseCraftState<Enemy02> {
 
   @override
   Offset getFirePos() {
-    if (position == null) {
+    if (position == null || isBoom) {
       return null;
     }
 

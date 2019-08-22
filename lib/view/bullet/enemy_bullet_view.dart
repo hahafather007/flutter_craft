@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'enemy_bullet01.dart';
+import 'enemy_bullet02.dart';
 import 'base_bullet.dart';
 import 'package:flutter_craft/view/enemy/base_enemy.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter_craft/view/enemy/enemy01.dart';
+import 'package:flutter_craft/view/enemy/enemy02.dart';
 import 'package:flutter_craft/view/base_frame.dart';
 import 'dart:math';
 
@@ -43,6 +45,7 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> with BaseFrame {
   final _random = Random.secure();
 
   int _enemy01Skip = 0;
+  int _enemy02Skip = 0;
   int _bulletIndex = 0;
 
   @override
@@ -80,21 +83,37 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> with BaseFrame {
   void update() {
     _bullets.forEach((v) => v.update());
     _enemy01Skip++;
+    _enemy02Skip++;
 
     // 清理可回收的子弹
     _bullets.removeWhere((v) => v.canRecycle());
 
     // 随机让敌机发射子弹
     if (_enemy01Skip >= 20) {
-      final enemy01List = widget.enemies.where((v) => v is Enemy01);
+      final enemy01List = widget.enemies.where((v) => v is Enemy01).toList();
       if (enemy01List.isNotEmpty) {
         final index = _random.nextInt(enemy01List.length);
-        if (widget.enemies[index].getFirePos() != null &&
-            widget.player.getCenterPos() != null) {
+        if (widget.player.getCenterPos() != null &&
+            enemy01List[index].getFirePos() != null) {
           _enemy01Skip = 0;
           _bullets.add(EnemyBullet01(
             key: Key("EnemyBullet01${_bulletIndex++}"),
-            enemyPos: widget.enemies[index].getFirePos(),
+            enemyPos: enemy01List[index].getFirePos(),
+            playerPos: widget.player.getCenterPos(),
+          ));
+        }
+      }
+    }
+    if (_enemy02Skip >= 15) {
+      final enemy02List = widget.enemies.where((v) => v is Enemy02).toList();
+      if (enemy02List.isNotEmpty) {
+        final index = _random.nextInt(enemy02List.length);
+        if (widget.player.getCenterPos() != null &&
+            enemy02List[index].getFirePos() != null) {
+          _enemy02Skip = 0;
+          _bullets.add(EnemyBullet02(
+            key: Key("EnemyBullet02${_bulletIndex++}"),
+            enemyPos: enemy02List[index].getFirePos(),
             playerPos: widget.player.getCenterPos(),
           ));
         }
