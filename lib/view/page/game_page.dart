@@ -22,6 +22,7 @@ class GamePage extends StatefulWidget {
 class GameState extends BaseState<GamePage>
     with BaseFrame, WidgetsBindingObserver {
   final _pauseStream = StreamController<bool>();
+  final _overStream = StreamController<bool>();
   final _scoreStream = StreamController<int>();
   final _rocketStream = StreamController<int>();
   final _pool = Soundpool(maxStreams: 10);
@@ -42,6 +43,7 @@ class GameState extends BaseState<GamePage>
   /// 敌机爆炸音效
   int _enemySoundId;
   bool _isPause = false;
+  bool _isGameOver = false;
 
   @override
   void init() {
@@ -62,10 +64,12 @@ class GameState extends BaseState<GamePage>
       _pool.setVolume(soundId: _enemySoundId, volume: 0.2);
     });
 
-    bindSub(
-        TimerUtil.updateStream.where((_) => !_isPause).listen((_) => update()));
-    bindSub(
-        TimerUtil.renderStream.where((_) => !_isPause).listen((_) => render()));
+    bindSub(TimerUtil.updateStream
+        .where((_) => !_isPause && !_isGameOver)
+        .listen((_) => update()));
+    bindSub(TimerUtil.renderStream
+        .where((_) => !_isPause && !_isGameOver)
+        .listen((_) => render()));
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -75,6 +79,7 @@ class GameState extends BaseState<GamePage>
     _pool.release();
     _scoreStream.close();
     _pauseStream.close();
+    _overStream.close();
     _rocketStream.close();
     WidgetsBinding.instance.removeObserver(this);
 
@@ -114,11 +119,14 @@ class GameState extends BaseState<GamePage>
             // 火箭弹按钮
             _buildRocketBtn(),
 
-            // 暂停
+            // 暂停和得分
             _buildPauseView(),
 
             // 得分
             _buildScoreView(),
+
+            // 游戏结束
+            _buildGameOver(),
           ],
         ),
       ),
@@ -126,11 +134,52 @@ class GameState extends BaseState<GamePage>
     );
   }
 
+  /// 游戏结束界面
+  Widget _buildGameOver() {
+    return StreamBuilder(
+      stream: _overStream.stream,
+      initialData: _isGameOver,
+      builder: (context, snapshot) {
+        final isOver = snapshot.data;
+
+        return isOver
+            ? Container(
+                color: Colors.black45,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "GameOver!",
+                      style: TextStyle(
+                        fontSize: 36,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6, bottom: 8),
+                      child: Text(
+                        "得分：$_score",
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    _buildMenuBtn(),
+                  ],
+                ),
+              )
+            : Container();
+      },
+    );
+  }
+
   /// 暂停按钮及视图
   Widget _buildPauseView() {
     return StreamBuilder(
       stream: _pauseStream.stream,
-      initialData: false,
+      initialData: _isPause,
       builder: (context, snapshot) {
         final isPause = snapshot.data;
 
@@ -138,6 +187,7 @@ class GameState extends BaseState<GamePage>
           color: isPause ? Colors.black45 : null,
           child: Stack(
             children: <Widget>[
+              // 暂停
               Positioned(
                 top: getStatusHeight(context) + 28,
                 right: 14,
@@ -156,6 +206,8 @@ class GameState extends BaseState<GamePage>
                   ),
                 ),
               ),
+
+              // 暂停菜单
               Center(
                 child: isPause
                     ? Column(
@@ -172,54 +224,7 @@ class GameState extends BaseState<GamePage>
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () => pop(context),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: <Widget>[
-                                    Image.asset(
-                                      "images/btn.png",
-                                      width: 80,
-                                      height: 40,
-                                      fit: BoxFit.fill,
-                                    ),
-                                    Text(
-                                      "退到主页",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(width: 24),
-                              GestureDetector(
-                                onTap: reset,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: <Widget>[
-                                    Image.asset(
-                                      "images/btn.png",
-                                      width: 80,
-                                      height: 40,
-                                      fit: BoxFit.fill,
-                                    ),
-                                    Text(
-                                      "重新开始",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          _buildMenuBtn(),
                         ],
                       )
                     : Container(),
@@ -228,6 +233,58 @@ class GameState extends BaseState<GamePage>
           ),
         );
       },
+    );
+  }
+
+  /// 菜单界面的按钮
+  Widget _buildMenuBtn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () => pop(context),
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Image.asset(
+                "images/btn.png",
+                width: 80,
+                height: 40,
+                fit: BoxFit.fill,
+              ),
+              Text(
+                "退到主页",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(width: 24),
+        GestureDetector(
+          onTap: reset,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Image.asset(
+                "images/btn.png",
+                width: 80,
+                height: 40,
+                fit: BoxFit.fill,
+              ),
+              Text(
+                "重新开始",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -340,6 +397,17 @@ class GameState extends BaseState<GamePage>
         }
       }
     });
+
+    // 检测游戏是否结束
+    if (_playerView.canRecycle()) {
+      _gameOver();
+    }
+  }
+
+  void _gameOver() {
+    _isGameOver = true;
+    _audioPlayer?.pause();
+    streamAdd(_overStream, true);
   }
 
   void _pause() {
@@ -374,7 +442,9 @@ class GameState extends BaseState<GamePage>
     _enemyView.reset();
     _enemyBulletView.reset();
     _score = 0;
+    _isGameOver = false;
     _audioPlayer.seek(const Duration());
+    streamAdd(_overStream, false);
     _resume();
   }
 }

@@ -59,7 +59,9 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   final _posStream = StreamController<Offset>();
   final _showStream = StreamController<bool>();
   final _stateStream = StreamController<int>();
+  final _boomStream = StreamController<int>();
   final _stateViews = List<Widget>();
+  final _boomViews = List<Widget>();
   final _playerH = 40.0;
   final _playerW = 30.0;
 
@@ -68,11 +70,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   int _animState = 0;
   int _animStateNum = 0;
   int _invincibleNum = 0;
-  bool _isRocketLeft = true;
+  int _boomNum = 0;
+  int _boomState = 0;
 
   /// 无敌状态
   bool _invincible = false;
-  bool _playerHide = true;
+  bool _playerShow = true;
+  bool _isRocketLeft = true;
+  bool _isBoom = false;
 
   @override
   void init() {
@@ -87,6 +92,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
         fit: BoxFit.fill,
       );
     }));
+    _boomViews.addAll(List.generate(6, (index) {
+      return Image.asset(
+        "images/boom3_state${index + 1}.png",
+        width: _playerH,
+        height: _playerH,
+        fit: BoxFit.fill,
+      );
+    }));
   }
 
   @override
@@ -94,6 +107,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     _posStream.close();
     _showStream.close();
     _stateStream.close();
+    _boomStream.close();
     _stateViews.clear();
 
     super.dispose();
@@ -118,7 +132,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
                   top: offset.dy,
                   child: StreamBuilder(
                     stream: _showStream.stream,
-                    initialData: true,
+                    initialData: _playerShow,
                     builder: (context, snapshot) {
                       final show = snapshot.data;
 
@@ -127,11 +141,21 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
                         duration: const Duration(milliseconds: 200),
                         child: StreamBuilder(
                           stream: _stateStream.stream,
-                          initialData: 0,
+                          initialData: _animState,
                           builder: (context, snapshot) {
                             final state = snapshot.data;
 
-                            return _stateViews[state];
+                            return StreamBuilder(
+                              stream: _boomStream.stream,
+                              initialData: _boomState,
+                              builder: (context, snapshot) {
+                                final boomState = snapshot.data;
+
+                                return _isBoom
+                                    ? _boomViews[boomState]
+                                    : _stateViews[state];
+                              },
+                            );
                           },
                         ),
                       );
@@ -148,7 +172,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   @override
   bool canRecycle() {
-    return _hp <= 0;
+    return _hp <= 0 && _boomNum == 120;
   }
 
   @override
@@ -157,28 +181,41 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
     streamAdd(_posStream, _position);
     streamAdd(_stateStream, _animStateNum);
-    streamAdd(_showStream, _playerHide);
+    streamAdd(_showStream, _playerShow);
+    streamAdd(_boomStream, _boomState);
   }
 
   @override
   void update() {
-    _animState++;
-    if (_invincible) {
-      _invincibleNum++;
-      _playerHide = (_invincibleNum ~/ 20) % 2 != 0;
-      if (_invincibleNum > 100) {
-        _invincible = false;
+    if (_isBoom) {
+      _boomNum++;
+      if (_boomNum < 120) {
+        if (_boomNum < 60) {
+          _boomState = _boomNum ~/ 10;
+        } else {
+          _boomState = (_boomNum - 60) ~/ 10;
+        }
       }
+    } else {
+      _animState++;
+      if (_invincible) {
+        _invincibleNum++;
+        _playerShow = (_invincibleNum ~/ 20) % 2 != 0;
+        if (_invincibleNum > 100) {
+          _invincible = false;
+        }
+      }
+      if (_animState >= 60) {
+        _animState = 0;
+      }
+      _animStateNum = _animState ~/ 15;
     }
-    if (_animState >= 60) {
-      _animState = 0;
-    }
-
-    _animStateNum = _animState ~/ 15;
   }
 
   /// 调用该方法表示手指移动了多少像素
   void move(double xNum, double yNum) async {
+    if (_isBoom) return;
+
     var dx = _position.dx + xNum;
     var dy = _position.dy + yNum;
 
@@ -210,7 +247,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   @override
   Offset getFirePos() {
-    if (_position == null) {
+    if (_position == null || _isBoom) {
       return null;
     }
 
@@ -219,7 +256,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   /// 火箭弹发射位置（左边一下，右边一下）
   Offset getRocketPos() {
-    if (_position == null) {
+    if (_position == null || _isBoom) {
       return null;
     }
 
@@ -237,7 +274,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
   }
 
   @override
-  bool get canAttack => !_invincible;
+  bool get canAttack => !_invincible && !_isBoom;
 
   @override
   int attack(int value) {
@@ -251,13 +288,21 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     if (_hp > 0) {
       _invincible = true;
       _invincibleNum = 0;
-    } else {}
+    } else {
+      _isBoom = true;
+    }
 
     return _hp;
   }
 
   @override
   void reset() {
+    _animState = 0;
+    _animStateNum = 0;
+    _invincibleNum = 0;
+    _boomNum = 0;
+    _boomState = 0;
+    _isBoom = false;
     _stateViews.clear();
     init();
   }
