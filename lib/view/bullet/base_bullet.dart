@@ -15,6 +15,11 @@ abstract class BaseBulletView extends StatefulWidget with BaseFrame {
   }
 
   @override
+  void reset() {
+    state.reset();
+  }
+
+  @override
   void render() {
     state.render();
   }
@@ -61,6 +66,9 @@ abstract class BaseBulletState<T extends BaseBulletView> extends BaseState<T>
 
     streamAdd(posStream, position);
   }
+
+  @override
+  void reset() {}
 
   @override
   void update() {

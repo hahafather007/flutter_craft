@@ -17,6 +17,11 @@ abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   bool get canAttack;
 
   @override
+  void reset() {
+    state.reset();
+  }
+
+  @override
   void render() {
     state.render();
   }
@@ -101,4 +106,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
       }
     }
   }
+
+  @override
+  void reset() {}
 }

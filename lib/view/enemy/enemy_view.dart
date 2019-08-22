@@ -15,6 +15,11 @@ class EnemyView extends StatefulWidget with BaseFrame {
   List<BaseEnemyView> get enemies => _state._enemies;
 
   @override
+  void reset() {
+    _state.reset();
+  }
+
+  @override
   bool canRecycle() {
     return _state.canRecycle();
   }
@@ -118,5 +123,16 @@ class _EnemyState extends BaseState<EnemyView> with BaseFrame {
   void render() {
     streamAdd(_ememyStream, _enemies);
     _enemies.forEach((v) => v.render());
+  }
+
+  @override
+  void reset() {
+    _enemy01Skip = 0;
+    _enemy02Skip = 0;
+    _enemy02Num = 0;
+    _enemy02Create = 0;
+    _enemy02Type = null;
+    _enemyIndex = 0;
+    _enemies.clear();
   }
 }

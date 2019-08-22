@@ -7,7 +7,6 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -99,7 +98,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
               alignment: Alignment.topCenter,
               child: _buildInkBtn(
                 text: "退出",
-                onTap: () => SystemNavigator.pop(),
+                onTap: exitApp,
               ),
             ),
           ),
@@ -122,7 +121,10 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
           ),
           Text(
             "$text",
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -143,4 +145,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
   bool canRecycle() {
     return false;
   }
+
+  @override
+  void reset() {}
 }

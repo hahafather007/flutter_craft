@@ -8,4 +8,6 @@ abstract class BaseFrame {
 
   /// 判断对象是否能被回收
   bool canRecycle();
+
+  void reset();
 }

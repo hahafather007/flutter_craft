@@ -2,7 +2,6 @@ import 'package:flutter_craft/view/base_frame.dart';
 import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/utils/system_util.dart';
-import 'package:flutter_craft/utils/timer_util.dart';
 import 'package:flutter_craft/view/base_craft.dart';
 
 class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
@@ -21,6 +20,11 @@ class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
     return _state.getFirePos();
   }
 
+  @override
+  void reset() {
+    _state.reset();
+  }
+
   Offset getCenterPos() {
     return _state.getCenterPos();
   }
@@ -29,7 +33,7 @@ class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
     return _state.getRocketPos();
   }
 
-    @override
+  @override
   bool get canAttack => _state.canAttack;
 
   @override
@@ -175,8 +179,6 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   /// 调用该方法表示手指移动了多少像素
   void move(double xNum, double yNum) async {
-    if (TimerUtil.isPause) return;
-
     var dx = _position.dx + xNum;
     var dy = _position.dy + yNum;
 
@@ -208,11 +210,19 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   @override
   Offset getFirePos() {
+    if (_position == null) {
+      return null;
+    }
+
     return Offset(_position.dx + _playerW / 2, _position.dy);
   }
 
   /// 火箭弹发射位置（左边一下，右边一下）
   Offset getRocketPos() {
+    if (_position == null) {
+      return null;
+    }
+
     _isRocketLeft = !_isRocketLeft;
     return Offset(_position.dx + _playerW / 4 * (_isRocketLeft ? 1 : 3),
         _position.dy + _playerH / 5);
@@ -241,8 +251,14 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
     if (_hp > 0) {
       _invincible = true;
       _invincibleNum = 0;
-    }
+    } else {}
 
     return _hp;
+  }
+
+  @override
+  void reset() {
+    _stateViews.clear();
+    init();
   }
 }

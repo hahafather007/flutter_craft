@@ -22,6 +22,11 @@ class GameGround extends StatefulWidget with BaseFrame {
   }
 
   @override
+  void reset() {
+    _state.reset();
+  }
+
+  @override
   void render() {
     _state.render();
   }
@@ -95,4 +100,7 @@ class _GameGroundState extends BaseState<GameGround> with BaseFrame {
   void render() {
     streamAdd(_moveStream, _moveY);
   }
+
+  @override
+  void reset() {}
 }

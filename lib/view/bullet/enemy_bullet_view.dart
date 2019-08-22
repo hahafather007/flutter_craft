@@ -24,6 +24,11 @@ class EnemyBulletView extends StatefulWidget with BaseFrame {
   List<BaseBulletView> get bullets => _state._bullets;
 
   @override
+  void reset() {
+    _state.reset();
+  }
+
+  @override
   bool canRecycle() {
     return _state.canRecycle();
   }
@@ -125,5 +130,13 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> with BaseFrame {
   void render() {
     streamAdd(_bulletStream, _bullets);
     _bullets.forEach((v) => v.render());
+  }
+
+  @override
+  void reset() {
+    _enemy01Skip = 0;
+    _enemy02Skip = 0;
+    _bulletIndex = 0;
+    _bullets.clear();
   }
 }

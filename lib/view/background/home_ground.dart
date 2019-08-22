@@ -17,6 +17,11 @@ class HomeGround extends StatefulWidget with BaseFrame {
   }
 
   @override
+  void reset() {
+    _state.reset();
+  }
+
+  @override
   void update() {
     _state.update();
   }
@@ -87,4 +92,7 @@ class _HomeGroundState extends BaseState<HomeGround> with BaseFrame {
   void render() {
     streamAdd(_bgStateStream, _bgStateNum);
   }
+
+  @override
+  void reset() {}
 }

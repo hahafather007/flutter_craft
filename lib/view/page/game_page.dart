@@ -41,6 +41,7 @@ class GameState extends BaseState<GamePage>
 
   /// 敌机爆炸音效
   int _enemySoundId;
+  bool _isPause = false;
 
   @override
   void init() {
@@ -61,8 +62,10 @@ class GameState extends BaseState<GamePage>
       _pool.setVolume(soundId: _enemySoundId, volume: 0.2);
     });
 
-    bindSub(TimerUtil.updateStream.listen((_) => update()));
-    bindSub(TimerUtil.renderStream.listen((_) => render()));
+    bindSub(
+        TimerUtil.updateStream.where((_) => !_isPause).listen((_) => update()));
+    bindSub(
+        TimerUtil.renderStream.where((_) => !_isPause).listen((_) => render()));
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -89,34 +92,37 @@ class GameState extends BaseState<GamePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          // 背景
-          _gameGround,
+    return WillPopScope(
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            // 背景
+            _gameGround,
 
-          // 敌机子弹图层
-          _enemyBulletView,
+            // 敌机子弹图层
+            _enemyBulletView,
 
-          // 玩家子弹图层
-          _playerBulletView,
+            // 玩家子弹图层
+            _playerBulletView,
 
-          // 敌机图层
-          _enemyView,
+            // 敌机图层
+            _enemyView,
 
-          // 玩家图层
-          _playerView,
+            // 玩家图层
+            _playerView,
 
-          // 得分
-          _buildScoreView(),
+            // 火箭弹按钮
+            _buildRocketBtn(),
 
-          // 暂停
-          _buildPauseView(),
+            // 暂停
+            _buildPauseView(),
 
-          // 火箭弹按钮
-          _buildRocketBtn(),
-        ],
+            // 得分
+            _buildScoreView(),
+          ],
+        ),
       ),
+      onWillPop: () async => false,
     );
   }
 
@@ -128,35 +134,98 @@ class GameState extends BaseState<GamePage>
       builder: (context, snapshot) {
         final isPause = snapshot.data;
 
-        return Stack(
-          children: <Widget>[
-            Positioned(
-              top: getStatusHeight(context) + 28,
-              right: 14,
-              child: GestureDetector(
-                onTap: () {
-                  if (isPause) {
-                    _resume();
-                  } else {
-                    _pause();
-                  }
-                },
-                child: Icon(
-                  isPause ? Icons.play_arrow : Icons.pause,
-                  size: 32,
-                  color: Colors.white70,
+        return Container(
+          color: isPause ? Colors.black45 : null,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: getStatusHeight(context) + 28,
+                right: 14,
+                child: GestureDetector(
+                  onTap: () {
+                    if (isPause) {
+                      _resume();
+                    } else {
+                      _pause();
+                    }
+                  },
+                  child: Icon(
+                    isPause ? Icons.play_arrow : Icons.pause,
+                    size: 32,
+                    color: Colors.white70,
+                  ),
                 ),
               ),
-            ),
-            Center(
-              child: isPause
-                  ? Text(
-                      "暂停中",
-                      style: TextStyle(fontSize: 36, color: Colors.white70),
-                    )
-                  : Container(),
-            ),
-          ],
+              Center(
+                child: isPause
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              "暂停中",
+                              style: TextStyle(
+                                fontSize: 36,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () => pop(context),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    Image.asset(
+                                      "images/btn.png",
+                                      width: 80,
+                                      height: 40,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      "退到主页",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(width: 24),
+                              GestureDetector(
+                                onTap: reset,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    Image.asset(
+                                      "images/btn.png",
+                                      width: 80,
+                                      height: 40,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      "重新开始",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Container(),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -177,7 +246,7 @@ class GameState extends BaseState<GamePage>
             onTap: () {
               if (num > 0) {
                 _playerBulletView.fireRocket();
-                _rocketNum -- ;
+                _rocketNum--;
               }
             },
             child: Stack(
@@ -274,13 +343,13 @@ class GameState extends BaseState<GamePage>
   }
 
   void _pause() {
-    TimerUtil.pause();
+    _isPause = true;
     _audioPlayer?.pause();
     streamAdd(_pauseStream, true);
   }
 
   void _resume() {
-    TimerUtil.resume();
+    _isPause = false;
     _audioPlayer?.resume();
     streamAdd(_pauseStream, false);
   }
@@ -295,5 +364,17 @@ class GameState extends BaseState<GamePage>
 
     streamAdd(_scoreStream, _score);
     streamAdd(_rocketStream, _rocketNum);
+  }
+
+  @override
+  void reset() {
+    _gameGround.reset();
+    _playerView.reset();
+    _playerBulletView.reset();
+    _enemyView.reset();
+    _enemyBulletView.reset();
+    _score = 0;
+    _audioPlayer.seek(const Duration());
+    _resume();
   }
 }

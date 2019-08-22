@@ -34,6 +34,11 @@ class PlayerBulletView extends StatefulWidget with BaseFrame {
   }
 
   @override
+  void reset() {
+    _state.reset();
+  }
+
+  @override
   void render() {
     _state.render();
   }
@@ -106,7 +111,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
     _bullets.removeWhere((v) => v.canRecycle());
 
     // 发射子弹
-    if (_skipNum >= Settings.playerFire) {
+    if (_skipNum >= Settings.playerFire && widget.player.getFirePos() != null) {
       _skipNum = 0;
       switch (Settings.playShootMood) {
         case PlayShootMood.SINGLE:
@@ -140,6 +145,8 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
 
   /// 发射火箭弹
   void fireRocket() {
+    if (widget.player.getRocketPos() == null) return;
+
     _bullets.add(PlayerRocket(
       key: Key("PlayerRocket${_bulletIndex++}"),
       playerPos: widget.player.getRocketPos(),
@@ -153,5 +160,12 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
   void render() {
     streamAdd(_bulletStream, _bullets);
     _bullets.forEach((v) => v.render());
+  }
+
+  @override
+  void reset() {
+    _skipNum = 0;
+    _bulletIndex = 0;
+    _bullets.clear();
   }
 }
