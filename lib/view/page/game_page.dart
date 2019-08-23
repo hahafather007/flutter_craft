@@ -42,6 +42,9 @@ class GameState extends BaseState<GamePage>
 
   /// 敌机爆炸音效
   int _enemySoundId;
+
+  /// 玩家爆炸音效
+  int _playerSoundId;
   bool _isPause = false;
   bool _isGameOver = false;
 
@@ -62,6 +65,12 @@ class GameState extends BaseState<GamePage>
     rootBundle.load("assets/enemy_boom01.mp3").then((data) async {
       _enemySoundId = await _pool.load(data);
       _pool.setVolume(soundId: _enemySoundId, volume: 0.2);
+    });
+
+    // 玩家爆炸音效
+    rootBundle.load("assets/player_boom.mp3").then((data) async {
+      _playerSoundId = await _pool.load(data);
+      _pool.setVolume(soundId: _playerSoundId, volume: 1);
     });
 
     bindSub(TimerUtil.updateStream
@@ -130,7 +139,13 @@ class GameState extends BaseState<GamePage>
           ],
         ),
       ),
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (!_isPause && !_isGameOver) {
+          _pause();
+        }
+
+        return false;
+      },
     );
   }
 
@@ -367,14 +382,20 @@ class GameState extends BaseState<GamePage>
 
     // 检测玩家是否被击中
     if (_playerView.canAttack) {
-      _enemyBulletView.bullets.forEach((bullet) {
+      for (final bullet in _enemyBulletView.bullets) {
         if (bullet.getRect() != null && _playerView.getRect() != null) {
           if (bullet.getRect().overlaps(_playerView.getRect())) {
-            _playerView.attack(bullet.bulletFire);
+            final score = _playerView.attack(bullet.bulletFire);
             bullet.useBullet();
+            debugPrint("score::::::::::::::::$score");
+            if (score == 0) {
+              _pool.play(_playerSoundId);
+            }
+
+            break;
           }
         }
-      });
+      }
     }
 
     // 检测敌机是否被击中

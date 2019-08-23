@@ -278,8 +278,8 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   @override
   int attack(int value) {
-    if (_invincible) {
-      return _hp;
+    if (_invincible || _isBoom) {
+      return 1;
     }
 
     _hp -= value;

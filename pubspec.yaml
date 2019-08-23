@@ -82,7 +82,7 @@ flutter:
     - assets/player_bullet.wav
     - assets/enemy_boom01.mp3
     - assets/enemy_boom02.mp3
-    - assets/enemy_boom03.mp3
+    - assets/player_boom.mp3
     - assets/player_rocket.mp3
 
   fonts:

@@ -98,7 +98,10 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
               alignment: Alignment.topCenter,
               child: _buildInkBtn(
                 text: "退出",
-                onTap: exitApp,
+                onTap: () async {
+                  await _audioPlayer?.dispose();
+                  exitApp();
+                },
               ),
             ),
           ),
