@@ -49,11 +49,12 @@ class SharedDepository {
 
   /// 玩家子弹的射击模式
   PlayShootMood get playShootMood {
-    final value = _getString("playShootMood",
-        defaultValue: PlayShootMood.TREBLE.toString());
-    for (final mood in PlayShootMood.values) {
-      if (value == mood.toString()) {
-        return mood;
+    final value = _getString("playShootMood");
+    if (value != null) {
+      for (final mood in PlayShootMood.values) {
+        if (value == mood.toString()) {
+          return mood;
+        }
       }
     }
 

@@ -25,6 +25,7 @@ class GameState extends BaseState<GamePage>
   final _overStream = StreamController<bool>();
   final _scoreStream = StreamController<int>();
   final _rocketStream = StreamController<int>();
+  final _playerHpStream = StreamController<int>();
   final _pool = Soundpool(maxStreams: 10);
 
   AudioPlayer _audioPlayer;
@@ -45,7 +46,11 @@ class GameState extends BaseState<GamePage>
 
   /// 玩家爆炸音效
   int _playerSoundId;
+
+  /// 是否暂停
   bool _isPause = false;
+
+  /// 游戏是否结束
   bool _isGameOver = false;
 
   @override
@@ -90,6 +95,7 @@ class GameState extends BaseState<GamePage>
     _pauseStream.close();
     _overStream.close();
     _rocketStream.close();
+    _playerHpStream.close();
     WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
@@ -128,7 +134,10 @@ class GameState extends BaseState<GamePage>
             // 火箭弹按钮
             _buildRocketBtn(),
 
-            // 暂停和得分
+            // 生命值
+            _buildHpView(),
+
+            // 暂停
             _buildPauseView(),
 
             // 得分
@@ -146,6 +155,54 @@ class GameState extends BaseState<GamePage>
 
         return false;
       },
+    );
+  }
+
+  /// 玩家血量的指示
+  Widget _buildHpView() {
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      right: 14,
+      child: StreamBuilder(
+        stream: _playerHpStream.stream,
+        initialData: Settings.playerHp,
+        builder: (context, snapshot) {
+          final hp = snapshot.data;
+          Color color;
+          if (hp > Settings.playerHp * 3 / 4) {
+            color = Colors.green;
+          } else if (hp > Settings.playerHp >> 1) {
+            color = Colors.yellow;
+          } else if (hp > Settings.playerHp >> 2) {
+            color = Colors.orange;
+          } else {
+            color = Colors.red;
+          }
+
+          return Center(
+            child: Opacity(
+              opacity: 0.5,
+              child: Container(
+                height: 160,
+                width: 10,
+                alignment: Alignment.bottomCenter,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: AnimatedContainer(
+                  color: color,
+                  width: 10,
+                  height: 160 * hp / Settings.playerHp,
+                  duration: const Duration(milliseconds: 300),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -469,6 +526,7 @@ class GameState extends BaseState<GamePage>
 
     streamAdd(_scoreStream, _score);
     streamAdd(_rocketStream, _rocketNum);
+    streamAdd(_playerHpStream, _playerView.hp);
   }
 
   @override

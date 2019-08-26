@@ -34,6 +34,8 @@ class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
     return _state.getRocketPos();
   }
 
+  int get hp => _state._hp;
+
   @override
   bool get canAttack => _state.canAttack;
 
