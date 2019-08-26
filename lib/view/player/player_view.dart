@@ -3,6 +3,7 @@ import 'package:flutter_craft/view/base_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/utils/system_util.dart';
 import 'package:flutter_craft/view/base_craft.dart';
+import 'package:flutter_craft/common/settings.dart';
 
 class PlayerView extends StatefulWidget with BaseCraft, BaseFrame {
   final _state = _PlayerState();
@@ -81,7 +82,7 @@ class _PlayerState extends BaseState<PlayerView> with BaseFrame, BaseCraft {
 
   @override
   void init() {
-    _hp = 3;
+    _hp = Settings.playerHp;
     _position = Offset(getScreenWidth(context) / 2 - _playerW / 2,
         getScreenHeight(context) - 80);
     _stateViews.addAll(List.generate(4, (index) {

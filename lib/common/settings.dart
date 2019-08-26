@@ -11,6 +11,9 @@ class Settings {
   /// 火箭弹备弹
   static int rocketNum;
 
+  /// 玩家的血量
+  static int playerHp;
+
   /// 玩家子弹的射击模式
   static PlayShootMood playShootMood;
 }

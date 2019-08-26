@@ -21,6 +21,7 @@ class SplashState extends BaseState<SplashPage> {
       Settings.playShootMood = shared.playShootMood;
       Settings.rocketAttack = shared.rocketAttack;
       Settings.rocketNum = shared.rocketNum;
+      Settings.playerHp = shared.playerHp;
 
       push(context, page: HomePage(), replace: true);
     });

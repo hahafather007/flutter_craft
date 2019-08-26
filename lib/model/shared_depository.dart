@@ -42,6 +42,11 @@ class SharedDepository {
 
   Future<bool> setRocketNum(int value) => _prefs.setInt("rocketNum", value);
 
+  /// 玩家血量
+  int get playerHp => _getInt("playerHp", defaultValue: 3);
+
+  Future<bool> setPlayerHp(int value) => _prefs.setInt("playerHp", value);
+
   /// 玩家子弹的射击模式
   PlayShootMood get playShootMood {
     final value = _getString("playShootMood",
