@@ -99,7 +99,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
               child: _buildInkBtn(
                 text: "退出",
                 onTap: () async {
-                  await _audioPlayer?.dispose();
+                  await _audioPlayer?.release();
                   exitApp();
                 },
               ),

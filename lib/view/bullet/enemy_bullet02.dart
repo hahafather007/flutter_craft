@@ -30,7 +30,7 @@ class _EnemyBullet02State extends BaseBulletState<EnemyBullet02> {
     final yLength = widget.playerPos.dy - widget.enemyPos.dy;
     final scale = xLength / yLength;
     final singleLength = _bulletSpeed / sqrt(1 + scale * scale);
-    yMove = singleLength;
+    yMove = yLength > 0 ? singleLength : -singleLength;
     xMove = scale * singleLength;
   }
 

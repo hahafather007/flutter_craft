@@ -419,6 +419,23 @@ class GameState extends BaseState<GamePage>
       }
     });
 
+    // 检测玩家是否和敌机相撞
+    if (_playerView.canAttack) {
+      for (final enemy in _enemyView.enemies) {
+        if (enemy.getRect() != null && enemy.getRect() != null) {
+          if (enemy.getRect().overlaps(_playerView.getRect())) {
+            final add = enemy.attack(3);
+            if (add > 0) {
+              _score += add;
+              _pool.play(_enemySoundId);
+            }
+            _playerView.attack(1);
+            break;
+          }
+        }
+      }
+    }
+
     // 检测游戏是否结束
     if (_playerView.canRecycle()) {
       _gameOver();
