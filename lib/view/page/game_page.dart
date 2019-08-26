@@ -387,7 +387,6 @@ class GameState extends BaseState<GamePage>
           if (bullet.getRect().overlaps(_playerView.getRect())) {
             final score = _playerView.attack(bullet.bulletFire);
             bullet.useBullet();
-            debugPrint("score::::::::::::::::$score");
             if (score == 0) {
               _pool.play(_playerSoundId);
             }

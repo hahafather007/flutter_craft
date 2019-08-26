@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_craft/view/page/home_page.dart';
+import 'package:flutter_craft/view/page/splash_page.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(),
+      home: SplashPage(),
       theme: ThemeData(
         platform: TargetPlatform.iOS,
         fontFamily: "AppFont",
