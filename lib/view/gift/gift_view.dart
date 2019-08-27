@@ -37,6 +37,8 @@ class GiftView extends StatefulWidget with BaseFrame {
   void createGift(Offset position, {bool force = false, GiftType type}) {
     _state.createGift(position, force: force, type: type);
   }
+
+  List<BaseGiftView> get gifts => _state._gifts;
 }
 
 class _GiftState extends BaseState<GiftView> with BaseFrame {
@@ -44,8 +46,12 @@ class _GiftState extends BaseState<GiftView> with BaseFrame {
   final _gifts = List<BaseGiftView>();
   final _random = Random();
 
+  int _giftIndex;
+
   @override
-  void init() {}
+  void init() {
+    _giftIndex = 0;
+  }
 
   @override
   void dispose() {
@@ -72,8 +78,8 @@ class _GiftState extends BaseState<GiftView> with BaseFrame {
 
   @override
   void render() {
-    _gifts.forEach((v) => v.render());
     streamAdd(_giftStream, _gifts);
+    _gifts.forEach((v) => v.render());
   }
 
   @override
@@ -89,16 +95,17 @@ class _GiftState extends BaseState<GiftView> with BaseFrame {
   /// 创建奖励品
   /// [force] 表示是否强制创建
   void createGift(Offset position, {bool force = false, GiftType type}) {
-    final canCreate = force ? true : _random.nextInt(99) > 10;
+    final canCreate = force ? true : _random.nextInt(100) < 10;
 
     if (!canCreate) return;
 
     if (type == null) {
-      type = GiftType.values[_random.nextInt(1)];
+      type = GiftType.values[_random.nextInt(2)];
     }
     switch (type) {
       case GiftType.BULLET:
         _gifts.add(BulletGift(
+          key: Key("BulletGift${_giftIndex++}"),
           position: position,
         ));
         break;

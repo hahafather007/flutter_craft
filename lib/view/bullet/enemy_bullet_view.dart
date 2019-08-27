@@ -136,7 +136,6 @@ class _EnemyBulletState extends BaseState<EnemyBulletView> with BaseFrame {
   void reset() {
     _enemy01Skip = 0;
     _enemy02Skip = 0;
-    _bulletIndex = 0;
     _bullets.clear();
   }
 }

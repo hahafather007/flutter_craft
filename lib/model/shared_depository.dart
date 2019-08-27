@@ -27,7 +27,7 @@ class SharedDepository {
   Future<bool> setIsFrame60(bool value) => _prefs.setBool("isFrame60", value);
 
   /// 玩家子弹发射间隔帧（越小火力越强，20~1）
-  int get playerFire => _getInt("playerFire", defaultValue: 4);
+  int get playerFire => _getInt("playerFire", defaultValue: 20);
 
   Future<bool> setPlayerFire(int value) => _prefs.setInt("playerFire", value);
 

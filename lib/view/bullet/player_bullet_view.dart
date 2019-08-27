@@ -46,6 +46,16 @@ class PlayerBulletView extends StatefulWidget with BaseFrame {
   void fireRocket() {
     _state.fireRocket();
   }
+
+  void ateBullet() {
+    _state.ateBullet();
+  }
+
+  void ateRocket() {
+    _state.ateRocket();
+  }
+
+  int get rocketNum => _state._rocketNum;
 }
 
 class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
@@ -57,6 +67,12 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
   int _bulletIndex = 0;
   int _bulletSoundId;
   int _rocketSoundId;
+
+  /// 玩家火力
+  int _playerFire = Settings.playerFire;
+
+  /// 火箭弹数量
+  int _rocketNum = Settings.rocketNum;
 
   @override
   void init() {
@@ -111,7 +127,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
     _bullets.removeWhere((v) => v.canRecycle());
 
     // 发射子弹
-    if (_skipNum >= Settings.playerFire && widget.player.getFirePos() != null) {
+    if (_skipNum >= _playerFire && widget.player.getFirePos() != null) {
       _skipNum = 0;
       switch (Settings.playShootMood) {
         case PlayShootMood.SINGLE:
@@ -145,6 +161,8 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
 
   /// 发射火箭弹
   void fireRocket() {
+    if (_rocketNum <= 0) return;
+
     final pos = widget.player.getRocketPos();
     if (pos == null) return;
 
@@ -155,6 +173,7 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
     if (_rocketSoundId != null) {
       _pool.play(_rocketSoundId);
     }
+    _rocketNum--;
   }
 
   @override
@@ -166,7 +185,18 @@ class _PlayerBulletState extends BaseState<PlayerBulletView> with BaseFrame {
   @override
   void reset() {
     _skipNum = 0;
-    _bulletIndex = 0;
     _bullets.clear();
+    _playerFire = Settings.playerFire;
+    _rocketNum = Settings.rocketNum;
+  }
+
+  /// 吃到了子弹奖励
+  void ateBullet() {
+    _playerFire--;
+  }
+
+  /// 吃到了火箭奖励
+  void ateRocket() {
+    _rocketNum++;
   }
 }

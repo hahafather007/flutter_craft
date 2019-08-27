@@ -40,9 +40,6 @@ class GameState extends BaseState<GamePage>
   /// 游戏得分
   int _score = 0;
 
-  /// 火箭弹数量
-  int _rocketNum = Settings.rocketNum;
-
   /// 敌机爆炸音效
   int _enemySoundId;
 
@@ -55,6 +52,9 @@ class GameState extends BaseState<GamePage>
   /// 游戏是否结束
   bool _isGameOver = false;
 
+  /// 火箭弹数量
+  int _rocketNum;
+
   @override
   void init() {
     _gameGround = GameGround();
@@ -65,6 +65,7 @@ class GameState extends BaseState<GamePage>
         EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
     _playerBulletView = PlayerBulletView(player: _playerView);
 
+    _rocketNum = _playerBulletView.rocketNum;
     // bgm
     final audio = AudioCache();
     audio.loop("game_bg.mp3").then((v) => _audioPlayer = v);
@@ -381,7 +382,6 @@ class GameState extends BaseState<GamePage>
             onTap: () {
               if (num > 0) {
                 _playerBulletView.fireRocket();
-                _rocketNum--;
               }
             },
             child: Stack(
@@ -444,6 +444,7 @@ class GameState extends BaseState<GamePage>
     _gameGround.update();
     _giftView.update();
 
+    _rocketNum = _playerBulletView.rocketNum;
     // 检测玩家是否被击中
     if (_playerView.canAttack) {
       for (final bullet in _enemyBulletView.bullets) {
@@ -500,6 +501,18 @@ class GameState extends BaseState<GamePage>
       }
     }
 
+    // 检测是否吃到了奖励
+    _giftView.gifts.forEach((gift) {
+      if (!gift.canRecycle()) {
+        if (gift.getRect() != null && _playerView.getRect() != null) {
+          if (gift.getRect().overlaps(_playerView.getRect())) {
+            _playerBulletView.ateBullet();
+            gift.useGift();
+          }
+        }
+      }
+    });
+
     // 检测游戏是否结束
     if (_playerView.canRecycle()) {
       _gameOver();
@@ -547,7 +560,7 @@ class GameState extends BaseState<GamePage>
     _enemyBulletView.reset();
     _giftView.reset();
     _score = 0;
-    _rocketNum = Settings.rocketNum;
+    _rocketNum = _playerBulletView.rocketNum;
     _isGameOver = false;
     _audioPlayer.seek(const Duration());
     streamAdd(_overStream, false);

@@ -97,7 +97,7 @@ class _EnemyState extends BaseState<EnemyView> with BaseFrame {
     // 生成[Enemy00]
     if (_enemy02Skip >= 100) {
       if (_enemy02Type == null) {
-        _enemy02Type = _random.nextInt(7);
+        _enemy02Type = _random.nextInt(8);
       }
       if (_enemy02Num >= 10) {
         _enemy02Skip = 0;
@@ -132,7 +132,6 @@ class _EnemyState extends BaseState<EnemyView> with BaseFrame {
     _enemy02Num = 0;
     _enemy02Create = 0;
     _enemy02Type = null;
-    _enemyIndex = 0;
     _enemies.clear();
   }
 }

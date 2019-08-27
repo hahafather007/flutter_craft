@@ -58,8 +58,8 @@ abstract class BaseGiftState<T extends BaseGiftView> extends BaseState<T>
   @override
   void init() {
     _timer = Timer(const Duration(seconds: 20), () => _isOutTime = true);
-    _xMove = _random.nextDouble() * 3;
-    _yMove = sqrt(9 - _xMove * _xMove);
+    _xMove = _random.nextDouble() * 2;
+    _yMove = sqrt(4 - _xMove * _xMove);
   }
 
   @override
@@ -68,7 +68,11 @@ abstract class BaseGiftState<T extends BaseGiftView> extends BaseState<T>
       stream: _posStream.stream,
       initialData: position,
       builder: (context, snapshot) {
+        final Offset pos = snapshot.data;
+
         return Positioned(
+          left: pos.dx,
+          top: pos.dy,
           child: giftView,
         );
       },
@@ -105,7 +109,12 @@ abstract class BaseGiftState<T extends BaseGiftView> extends BaseState<T>
 
   @override
   void update() {
-    if (_giftUsed || position == null || _xMove == null || _yMove == null) {
+    if (_giftUsed ||
+        position == null ||
+        _xMove == null ||
+        _yMove == null ||
+        giftH == null ||
+        giftW == null) {
       return;
     }
     position = Offset(position.dx + _xMove, position.dy + _yMove);
@@ -117,12 +126,26 @@ abstract class BaseGiftState<T extends BaseGiftView> extends BaseState<T>
         useGift();
       }
     } else {
-      if (position.dy >= getScreenHeight(context) - giftH ||
-          position.dy <= 0) {
-        _yMove = -_yMove;
-      } else if (position.dx >= getScreenWidth(context) - giftW ||
-          position.dx <= 0) {
-        _xMove = -_xMove;
+      if (position.dy > getScreenHeight(context) - giftH) {
+        position = Offset(position.dx, getScreenHeight(context) - giftH);
+        final change = _xMove;
+        _xMove = _xMove > 0 ? _yMove.abs() : -_yMove.abs();
+        _yMove = -change.abs();
+      } else if (position.dy < 0) {
+        position = Offset(position.dx, 0);
+        final change = _xMove;
+        _xMove = _xMove > 0 ? _yMove.abs() : -_yMove.abs();
+        _yMove = change.abs();
+      } else if (position.dx > getScreenWidth(context) - giftW) {
+        position = Offset(getScreenWidth(context) - giftW, position.dy);
+        final change = _yMove;
+        _yMove = _yMove > 0 ? _xMove.abs() : -_xMove.abs();
+        _xMove = -change.abs();
+      } else if (position.dx < 0) {
+        position = Offset(0, position.dy);
+        final change = _yMove;
+        _yMove = _yMove > 0 ? _xMove.abs() : -_xMove.abs();
+        _xMove = change.abs();
       }
     }
   }
