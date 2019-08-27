@@ -26,8 +26,8 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
     _ground = HomeGround();
 
     // bgm
-//    final audio = AudioCache();
-//    audio.loop("home_bg.mp3").then((v) => _audioPlayer = v);
+    final audio = AudioCache();
+    audio.loop("home_bg.mp3").then((v) => _audioPlayer = v);
     bindSub(
         TimerUtil.renderStream.where((_) => !_isPause).listen((_) => render()));
     bindSub(

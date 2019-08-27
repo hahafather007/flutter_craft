@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_craft/view/enemy/enemy_view.dart';
 import 'package:flutter_craft/view/base_state.dart';
+import 'package:flutter_craft/view/gift/bullet_gift.dart';
 import 'package:flutter_craft/view/player/player_view.dart';
 import 'package:flutter_craft/view/bullet/enemy_bullet_view.dart';
 import 'package:flutter_craft/view/bullet/player_bullet_view.dart';
@@ -506,7 +507,11 @@ class GameState extends BaseState<GamePage>
       if (!gift.canRecycle()) {
         if (gift.getRect() != null && _playerView.getRect() != null) {
           if (gift.getRect().overlaps(_playerView.getRect())) {
-            _playerBulletView.ateBullet();
+            if (gift is BulletGift) {
+              _playerBulletView.ateBullet();
+            } else {
+              _playerBulletView.ateRocket();
+            }
             gift.useGift();
           }
         }

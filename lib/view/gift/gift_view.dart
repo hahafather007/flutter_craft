@@ -110,6 +110,10 @@ class _GiftState extends BaseState<GiftView> with BaseFrame {
         ));
         break;
       case GiftType.ROCKET:
+        _gifts.add(RocketGift(
+          key: Key("RocketGift${_giftIndex++}"),
+          position: position,
+        ));
         break;
     }
   }
