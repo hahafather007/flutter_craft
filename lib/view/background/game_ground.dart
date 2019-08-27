@@ -33,7 +33,7 @@ class GameGround extends StatefulWidget with BaseFrame {
 }
 
 class _GameGroundState extends BaseState<GameGround> with BaseFrame {
-  final _img = Random.secure().nextDouble() > 0.5 ? "bg1.jpg" : "bg2.jpg";
+  final _img = Random().nextDouble() > 0.5 ? "bg1.jpg" : "bg2.jpg";
   final _moveStream = StreamController<double>();
 
   Widget _imgView;

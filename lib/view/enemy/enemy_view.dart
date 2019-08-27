@@ -38,7 +38,7 @@ class EnemyView extends StatefulWidget with BaseFrame {
 class _EnemyState extends BaseState<EnemyView> with BaseFrame {
   final _ememyStream = StreamController<List<BaseEnemyView>>();
   final _enemies = List<BaseEnemyView>();
-  final _random = Random.secure();
+  final _random = Random();
 
   int _enemy01Skip = 0;
   int _enemy02Skip = 0;

@@ -47,7 +47,7 @@ class EnemyBulletView extends StatefulWidget with BaseFrame {
 class _EnemyBulletState extends BaseState<EnemyBulletView> with BaseFrame {
   final _bulletStream = StreamController<List<BaseBulletView>>();
   final _bullets = List<BaseBulletView>();
-  final _random = Random.secure();
+  final _random = Random();
 
   int _enemy01Skip = 0;
   int _enemy02Skip = 0;

@@ -9,12 +9,6 @@ class Enemy01 extends BaseEnemyView {
 
   @override
   BaseCraftState<BaseEnemyView> get state => _state;
-
-  @override
-  bool get canAttack => _state.canAttack;
-
-  @override
-  int attack(int value) => _state.attack(value);
 }
 
 class _Enemy01State extends BaseCraftState<Enemy01> {
@@ -124,4 +118,9 @@ class _Enemy01State extends BaseCraftState<Enemy01> {
 
   @override
   bool get canAttack => hp > 0;
+
+  @override
+  Offset getCenter() {
+    return Offset(position.dx + _enemyW / 2, position.dy + _enemyH / 2);
+  }
 }

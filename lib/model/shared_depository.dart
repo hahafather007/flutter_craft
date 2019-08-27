@@ -27,7 +27,7 @@ class SharedDepository {
   Future<bool> setIsFrame60(bool value) => _prefs.setBool("isFrame60", value);
 
   /// 玩家子弹发射间隔帧（越小火力越强，20~1）
-  int get playerFire => _getInt("playerFire", defaultValue: 20);
+  int get playerFire => _getInt("playerFire", defaultValue: 4);
 
   Future<bool> setPlayerFire(int value) => _prefs.setInt("playerFire", value);
 
@@ -43,7 +43,7 @@ class SharedDepository {
   Future<bool> setRocketNum(int value) => _prefs.setInt("rocketNum", value);
 
   /// 玩家血量
-  int get playerHp => _getInt("playerHp", defaultValue: 3);
+  int get playerHp => _getInt("playerHp", defaultValue: 30);
 
   Future<bool> setPlayerHp(int value) => _prefs.setInt("playerHp", value);
 
@@ -58,7 +58,7 @@ class SharedDepository {
       }
     }
 
-    return PlayShootMood.SINGLE;
+    return PlayShootMood.TREBLE;
   }
 
   Future<bool> setPlayShootMood(PlayShootMood value) =>

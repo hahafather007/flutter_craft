@@ -76,6 +76,8 @@ flutter:
     - images/rocket_01.png
     - images/rocket_02.png
     - images/rocket_03.png
+    - images/bullet_gift.png
+    - images/rocket_gift.png
     # 音效
     - assets/game_bg.mp3
     - assets/home_bg.mp3

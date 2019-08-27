@@ -13,6 +13,7 @@ import 'package:flutter_craft/utils/system_util.dart';
 import 'package:soundpool/soundpool.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_craft/common/settings.dart';
+import 'package:flutter_craft/view/gift/gift_view.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -34,6 +35,7 @@ class GameState extends BaseState<GamePage>
   EnemyBulletView _enemyBulletView;
   PlayerBulletView _playerBulletView;
   GameGround _gameGround;
+  GiftView _giftView;
 
   /// 游戏得分
   int _score = 0;
@@ -58,6 +60,7 @@ class GameState extends BaseState<GamePage>
     _gameGround = GameGround();
     _enemyView = EnemyView();
     _playerView = PlayerView();
+    _giftView = GiftView();
     _enemyBulletView =
         EnemyBulletView(enemies: _enemyView.enemies, player: _playerView);
     _playerBulletView = PlayerBulletView(player: _playerView);
@@ -127,6 +130,9 @@ class GameState extends BaseState<GamePage>
 
             // 敌机图层
             _enemyView,
+
+            // 奖励品
+            _giftView,
 
             // 玩家图层
             _playerView,
@@ -436,6 +442,7 @@ class GameState extends BaseState<GamePage>
     _enemyView.update();
     _enemyBulletView.update();
     _gameGround.update();
+    _giftView.update();
 
     // 检测玩家是否被击中
     if (_playerView.canAttack) {
@@ -466,6 +473,7 @@ class GameState extends BaseState<GamePage>
             final add = enemy.attack(bullet.bulletFire);
             if (add > 0) {
               _score += add;
+              _giftView.createGift(enemy.getCenter());
               _pool.play(_enemySoundId);
             }
             bullet.useBullet();
@@ -523,6 +531,7 @@ class GameState extends BaseState<GamePage>
     _playerBulletView.render();
     _enemyView.render();
     _enemyBulletView.render();
+    _giftView.render();
 
     streamAdd(_scoreStream, _score);
     streamAdd(_rocketStream, _rocketNum);
@@ -536,6 +545,7 @@ class GameState extends BaseState<GamePage>
     _playerBulletView.reset();
     _enemyView.reset();
     _enemyBulletView.reset();
+    _giftView.reset();
     _score = 0;
     _rocketNum = Settings.rocketNum;
     _isGameOver = false;

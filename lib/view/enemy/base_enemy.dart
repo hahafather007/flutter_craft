@@ -14,12 +14,15 @@ abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   State<StatefulWidget> createState() => state;
 
   @override
-  bool get canAttack;
+  bool get canAttack => state.canAttack;
 
   @override
   void reset() {
     state.reset();
   }
+
+  @override
+  int attack(int value) => state.attack(value);
 
   @override
   void render() {
@@ -45,6 +48,10 @@ abstract class BaseEnemyView extends StatefulWidget with BaseFrame, BaseCraft {
   Rect getRect() {
     return state.getRect();
   }
+
+  Offset getCenter() {
+    return state.getCenter();
+  }
 }
 
 /// 所有敌机的基础类
@@ -52,7 +59,7 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
     with BaseFrame, BaseCraft {
   final posStream = StreamController<Offset>();
   final boomStateStream = StreamController<int>();
-  final random = Random.secure();
+  final random = Random();
 
   int hp = 1;
 
@@ -109,4 +116,6 @@ abstract class BaseCraftState<T extends BaseEnemyView> extends BaseState<T>
 
   @override
   void reset() {}
+
+  Offset getCenter();
 }

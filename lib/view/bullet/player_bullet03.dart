@@ -47,7 +47,7 @@ class _PlayerBullet03State extends BaseBulletState<PlayerBullet03> {
     _bulletView = Transform.rotate(
       angle: -xMove / yMove,
       child: Image.asset(
-        "images/player_bullet1.png",
+        "images/player_bullet3.png",
         width: _bulletW,
         height: _bulletH,
         fit: BoxFit.fill,
