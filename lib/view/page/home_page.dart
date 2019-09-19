@@ -14,9 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class HomeState extends BaseState<HomePage> with BaseFrame {
+  final _pageController = PageController();
+
   HomeGround _ground;
   AudioPlayer _audioPlayer;
-
+  int _secondPage = 0;
   bool _isPause = false;
 
   @override
@@ -38,6 +40,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
   void dispose() {
     TimerUtil.dispose();
     _audioPlayer?.release();
+    _pageController.dispose();
 
     super.dispose();
   }
@@ -51,8 +54,17 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
             // 背景图
             _ground,
 
-            // 按钮
-            _buildBtns(),
+            // 页面管理
+            PageView(
+              controller: _pageController,
+              children: <Widget>[
+                // 按钮页面
+                _buildBtns(),
+
+                // 第二页面
+                _getSecondPage(),
+              ],
+            ),
           ],
         ),
       ),
@@ -60,15 +72,37 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
     );
   }
 
+  /// 获取第二页面
+  /// [_secondPage] 0表示[_StorePage],1表示[_AboutPage]
+  Widget _getSecondPage() {
+    if (_secondPage == 0) {
+      return _StorePage(
+        onBack: () {
+          _pageController.animateToPage(0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.linear);
+        },
+      );
+    } else {
+      return _AboutPage(
+        onBack: () {
+          _pageController.animateToPage(0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.linear);
+        },
+      );
+    }
+  }
+
   /// 界面上的按钮
   Widget _buildBtns() {
-    return Positioned.fill(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 120),
       child: Column(
         children: <Widget>[
           // 开始游戏
           Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
+            child: Center(
               child: _buildInkBtn(
                 text: "开始",
                 onTap: () async {
@@ -88,15 +122,34 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
             child: Center(
               child: _buildInkBtn(
                 text: "商店",
-                onTap: () {},
+                onTap: () {
+                  setState(() => _secondPage = 0);
+                  _pageController.animateToPage(1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.linear);
+                },
+              ),
+            ),
+          ),
+
+          // 关于
+          Expanded(
+            child: Center(
+              child: _buildInkBtn(
+                text: "关于",
+                onTap: () {
+                  setState(() => _secondPage = 1);
+                  _pageController.animateToPage(1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.linear);
+                },
               ),
             ),
           ),
 
           // 退出
           Expanded(
-            child: Container(
-              alignment: Alignment.topCenter,
+            child: Center(
               child: _buildInkBtn(
                 text: "退出",
                 onTap: () async {
@@ -152,4 +205,92 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
 
   @override
   void reset() {}
+}
+
+/// 商店页面
+class _StorePage extends StatefulWidget {
+  final VoidCallback onBack;
+
+  _StorePage({@required this.onBack});
+
+  @override
+  State createState() => _StoreState();
+}
+
+class _StoreState extends BaseState<_StorePage> {
+  @override
+  void init() {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        // 标题栏
+        _buildTitle(),
+      ],
+    );
+  }
+
+  /// 标题栏
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24),
+      child: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        title: Text("商店"),
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: widget.onBack,
+        ),
+      ),
+    );
+  }
+}
+
+/// 关于页面
+class _AboutPage extends StatefulWidget {
+  final VoidCallback onBack;
+
+  _AboutPage({@required this.onBack});
+
+  @override
+  State createState() {
+    return _AboutState();
+  }
+}
+
+class _AboutState extends BaseState<_AboutPage> {
+  @override
+  void init() {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        // 标题栏
+        _buildTitle(),
+      ],
+    );
+  }
+
+  /// 标题栏
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24),
+      child: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        title: Text("关于"),
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: widget.onBack,
+        ),
+      ),
+    );
+  }
 }
