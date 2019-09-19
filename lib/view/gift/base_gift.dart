@@ -128,24 +128,16 @@ abstract class BaseGiftState<T extends BaseGiftView> extends BaseState<T>
     } else {
       if (position.dy > getScreenHeight(context) - giftH) {
         position = Offset(position.dx, getScreenHeight(context) - giftH);
-        final change = _xMove;
-        _xMove = _xMove > 0 ? _yMove.abs() : -_yMove.abs();
-        _yMove = -change.abs();
+        _yMove = -_yMove;
       } else if (position.dy < 0) {
         position = Offset(position.dx, 0);
-        final change = _xMove;
-        _xMove = _xMove > 0 ? _yMove.abs() : -_yMove.abs();
-        _yMove = change.abs();
+        _yMove = -_yMove;
       } else if (position.dx > getScreenWidth(context) - giftW) {
         position = Offset(getScreenWidth(context) - giftW, position.dy);
-        final change = _yMove;
-        _yMove = _yMove > 0 ? _xMove.abs() : -_xMove.abs();
-        _xMove = -change.abs();
+        _xMove = -_xMove;
       } else if (position.dx < 0) {
         position = Offset(0, position.dy);
-        final change = _yMove;
-        _yMove = _yMove > 0 ? _xMove.abs() : -_xMove.abs();
-        _xMove = change.abs();
+        _xMove = -_xMove;
       }
     }
   }
