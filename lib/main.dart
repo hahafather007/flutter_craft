@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_craft/view/page/splash_page.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_craft/view/page/splash_page.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:auto_orientation/auto_orientation.dart';
 
