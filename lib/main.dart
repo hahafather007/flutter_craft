@@ -8,7 +8,7 @@ void main() {
   Observable.fromFuture(
           SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]))
       .asyncMap((_) => SystemChrome.setEnabledSystemUIOverlays([]))
-      .asyncMap((_) => AutoOrientation.portraitUpMode())
+      .map((_) => AutoOrientation.portraitUpMode())
       .listen((_) => runApp(CraftApp()));
 }
 

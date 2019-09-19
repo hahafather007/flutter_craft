@@ -76,6 +76,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
                   _audioPlayer?.pause();
                   await push(context, page: GamePage());
                   _isPause = false;
+                  _audioPlayer?.seek(const Duration());
                   _audioPlayer?.resume();
                 },
               ),
@@ -87,7 +88,7 @@ class HomeState extends BaseState<HomePage> with BaseFrame {
             child: Center(
               child: _buildInkBtn(
                 text: "商店",
-                onTap: () async {},
+                onTap: () {},
               ),
             ),
           ),
